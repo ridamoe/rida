@@ -4,11 +4,11 @@ const settings = useSettingsStore();
 
 <template>
   <aside
-    class="relative flex w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out sm:h-screen sm:w-80"
+    class="relative flex w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out md:h-screen md:w-80"
     :class="settings.showPanel ? '' : '-ml-80'"
   >
     <div
-      class="absolute z-10 hidden h-12 w-12 bg-neutral-900 p-3 sm:block"
+      class="absolute z-10 hidden h-12 w-12 bg-neutral-900 p-3 md:block"
       :class="
         settings.showPanel
           ? 'triangle-left right-0 top-0 text-right'
