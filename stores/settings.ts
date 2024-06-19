@@ -2,9 +2,9 @@ interface State {
   showPanel: boolean;
   pageFit:
     | "original"
-    | "stretch-height"
-    | "stretch-all"
-    | "stretch-width"
+    | "fit-height"
+    | "fit-all"
+    | "fit-width"
     | "limit-all"
     | "limit-height"
     | "limit-width";
@@ -21,4 +21,5 @@ export const useSettingsStore = defineStore("settingsStore", {
     spreadLayout: "single-page",
     readDirection: "right-to-left",
   }),
+  persist: true,
 });

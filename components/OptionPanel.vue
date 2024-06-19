@@ -4,8 +4,8 @@ const settings = useSettingsStore();
 
 <template>
   <aside
-    class="relative flex w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out md:h-screen md:w-80"
-    :class="settings.showPanel ? '' : '-ml-80'"
+    class="relative flex w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 md:h-screen md:w-80 md:transition-[margin] md:ease-in-out"
+    :class="settings.showPanel ? '' : 'md:-ml-80'"
   >
     <div
       class="absolute z-10 hidden h-12 w-12 bg-neutral-900 p-3 md:block"
@@ -54,20 +54,20 @@ const settings = useSettingsStore();
             },
             { value: 'limit-all', icon: 'i-[majesticons--maximize-line]' },
             {
-              value: 'limit-height',
+              value: 'limit-width',
               icon: 'i-[ic--round-expand] rotate-90',
             },
-            { value: 'limit-width', icon: 'i-[ic--round-expand]' },
+            { value: 'limit-height', icon: 'i-[ic--round-expand]' },
             {
-              value: 'stretch-all',
+              value: 'fit-all',
               icon: 'i-[mage--arrows-all-direction]',
             },
             {
-              value: 'stretch-width',
+              value: 'fit-width',
               icon: 'i-[ph--arrows-horizontal-fill]',
             },
             {
-              value: 'stretch-height',
+              value: 'fit-height',
               icon: 'i-[ph--arrows-vertical-fill]',
             },
           ]"

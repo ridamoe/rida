@@ -3,7 +3,11 @@ import { iconsPlugin, dynamicIconsPlugin } from "@egoist/tailwindcss-icons";
 export default {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        md: "700px",
+      },
+    },
   },
   plugins: [iconsPlugin(), dynamicIconsPlugin()],
 };
