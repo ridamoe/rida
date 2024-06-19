@@ -5,5 +5,5 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="h-full w-full" :class="icon"></div>
+  <span class="aspect-square h-full w-full" :class="icon"></span>
 </template>

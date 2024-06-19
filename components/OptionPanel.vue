@@ -4,7 +4,7 @@ const settings = useSettingsStore();
 
 <template>
   <aside
-    class="relative flex h-auto min-h-52 w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out sm:h-screen sm:w-80"
+    class="relative flex w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out sm:h-screen sm:w-80"
     :class="settings.showPanel ? '' : '-ml-80'"
   >
     <div
@@ -27,24 +27,24 @@ const settings = useSettingsStore();
         :class="settings.showPanel ? 'left-[0.5rem]' : 'right-[0.5rem]'"
       />
     </div>
-    <header class="flex w-full">
+    <header class="flex h-12 w-full align-middle">
       <IconButton icon="i-[ic--round-close]" class="p-2" />
       <h1 class="flex-1 p-3 text-center">
         <a class="hover:underline" href="#">Example Title</a>
       </h1>
       <div class="h-12 w-12"></div>
     </header>
-    <div class="flex max-h-8 w-full items-center justify-end gap-1 px-2 py-1.5">
+    <div class="flex h-8 w-full items-center justify-end gap-1 px-2 py-1.5">
       <IconButton icon="i-[mdi--share-variant-outline]" />
     </div>
     <div
-      class="flex max-h-12 w-full justify-between bg-neutral-900 p-2.5 text-center"
+      class="flex h-12 w-full justify-between bg-neutral-900 p-2.5 text-center align-middle"
     >
       <IconButton icon="i-[iconamoon--arrow-left-2]" />
       <p>Chapter 1</p>
       <IconButton icon="i-[iconamoon--arrow-right-2]" />
     </div>
-    <div class="flex max-h-8 w-full items-center justify-end gap-1 py-1.5">
+    <div class="flex h-8 w-full justify-end gap-1 py-1.5 align-middle">
       <div class="mx-3 flex h-full gap-6">
         <IconCycleButton
           :states="[
