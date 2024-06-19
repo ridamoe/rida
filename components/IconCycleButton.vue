@@ -1,41 +1,57 @@
-<script setup lang="ts">
-interface IconProps {
-  name: string;
+<script lang="ts">
+interface State {
+  value: string | boolean;
   icon: string;
 }
 
-const currentStateName = defineModel<string | number>();
+function validateState(states: Array<State>): boolean {
+  const values = new Set<string | boolean>();
+  for (const item of states) {
+    if (values.has(item.value)) {
+      return false;
+    }
+    values.add(item.value);
+  }
+  return true;
+}
+</script>
 
-const props = defineProps<{
-  states: Array<IconProps>;
-  disableAnimation?: boolean;
-}>();
+<script setup lang="ts">
+const currentValue = defineModel<string | boolean>();
+
+const props = defineProps({
+  states: {
+    type: Array<State>,
+    required: true,
+    validator: validateState,
+  },
+  disableAnimation: {
+    type: Boolean,
+    required: false,
+  },
+});
 
 defineEmits<{
   click: [next: string];
 }>();
 
-function findState(name?: string | number): number {
-  if (name == undefined) return -1;
-  else if (typeof name == "number") return name % props.states.length;
-  else return props.states.findIndex((e) => e.name == name);
-}
-
-const currentStateIndex = computed(() => findState(currentStateName.value));
-
 const state = computed(() => {
-  if (currentStateIndex.value != -1) {
-    return props.states[currentStateIndex.value];
-  } else return { icon: "i-[gg--debug]" } as IconProps;
+  let state = { icon: "i-[gg--debug]" } as State;
+  if (currentValue.value != undefined) {
+    let found = props.states.find((e) => e.value == currentValue.value);
+    if (found != undefined) state = found;
+  }
+  return state;
 });
 
 const nextStateName = computed(() => {
-  let idx = (currentStateIndex.value + 1) % props.states.length;
-  return props.states[idx].name;
+  let currentIdx = props.states.indexOf(state.value);
+  let idx = (currentIdx + 1) % props.states.length;
+  return props.states[idx].value;
 });
 
 function update() {
-  currentStateName.value = nextStateName.value;
+  currentValue.value = nextStateName.value;
 }
 </script>
 

@@ -1,35 +1,30 @@
 <script setup lang="ts">
-const showPanel = ref(true);
-
-const pageFit = ref(0);
-const pinProgress = ref(0);
-const readDirection = ref(0);
-const pageLayout = ref(0);
+const settings = useSettingsStore();
 </script>
 
 <template>
   <aside
     class="relative flex h-auto min-h-52 w-full flex-none flex-col items-center gap-0 bg-neutral-800 text-stone-200 transition-[margin] ease-in-out sm:h-screen sm:w-80"
-    :class="showPanel ? '' : '-ml-80'"
+    :class="settings.showPanel ? '' : '-ml-80'"
   >
     <div
       class="absolute z-10 hidden h-12 w-12 bg-neutral-900 p-3 sm:block"
       :class="
-        showPanel
+        settings.showPanel
           ? 'triangle-left right-0 top-0 text-right'
           : 'triangle-right -right-12 text-left'
       "
     >
       <IconButton
-        @click="showPanel = !showPanel"
+        @click="settings.showPanel = !settings.showPanel"
         disable-animation
         :icon="
-          showPanel
+          settings.showPanel
             ? 'i-[iconamoon--arrow-left-2]'
             : 'i-[iconamoon--arrow-right-2]'
         "
         class="relative bottom-[0.5rem]"
-        :class="showPanel ? 'left-[0.5rem]' : 'right-[0.5rem]'"
+        :class="settings.showPanel ? 'left-[0.5rem]' : 'right-[0.5rem]'"
       />
     </div>
     <header class="flex w-full">
@@ -54,76 +49,76 @@ const pageLayout = ref(0);
         <IconCycleButton
           :states="[
             {
-              name: 'original',
+              value: 'original',
               icon: 'i-[icon-park-outline--one-to-one]',
             },
-            { name: 'limit-all', icon: 'i-[majesticons--maximize-line]' },
+            { value: 'limit-all', icon: 'i-[majesticons--maximize-line]' },
             {
-              name: 'limit-height',
+              value: 'limit-height',
               icon: 'i-[ic--round-expand] rotate-90',
             },
-            { name: 'limit-width', icon: 'i-[ic--round-expand]' },
+            { value: 'limit-width', icon: 'i-[ic--round-expand]' },
             {
-              name: 'stretch-all',
+              value: 'stretch-all',
               icon: 'i-[mage--arrows-all-direction]',
             },
             {
-              name: 'stretch-width',
+              value: 'stretch-width',
               icon: 'i-[ph--arrows-horizontal-fill]',
             },
             {
-              name: 'stretch-height',
+              value: 'stretch-height',
               icon: 'i-[ph--arrows-vertical-fill]',
             },
           ]"
-          v-model="pageFit"
+          v-model="settings.pageFit"
         />
         <IconCycleButton
           :states="[
             {
-              name: 'right-to-left',
+              value: 'right-to-left',
               icon: 'i-[mingcute--arrow-to-left-line]',
             },
             {
-              name: 'left-to-right',
+              value: 'left-to-right',
               icon: 'i-[mingcute--arrow-to-right-line]',
             },
             {
-              name: 'vertical',
+              value: 'vertical',
               icon: 'i-[mingcute--arrow-to-down-line]',
             },
           ]"
-          v-model="readDirection"
+          v-model="settings.readDirection"
         />
         <IconCycleButton
           :states="[
             {
-              name: 'single-page',
+              value: 'single-page',
               icon: 'i-[mdi--file-image-outline]',
             },
             {
-              name: 'double-page',
+              value: 'double-page',
               icon: 'i-[mdi--book-open-blank-variant-outline]',
             },
             {
-              name: 'double-page-odd',
+              value: 'double-page-odd',
               icon: 'i-[mdi--book-open-blank-variant] scale-x-[-1]',
             },
           ]"
-          v-model="pageLayout"
+          v-model="settings.spreadLayout"
         />
         <IconCycleButton
           :states="[
             {
-              name: 'pinned',
+              value: true,
               icon: 'i-[ic--round-push-pin]',
             },
             {
-              name: 'unpinned',
+              value: false,
               icon: 'i-[ic--round-pin-off]',
             },
           ]"
-          v-model="pinProgress"
+          v-model="settings.pinProgress"
         />
       </div>
       <div class="h-full w-[1.5px] rounded-xl bg-rose-600"></div>

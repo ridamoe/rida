@@ -5,6 +5,6 @@ const route = useRoute();
 <template>
   <div class="max-w-screen flex min-h-screen flex-col sm:flex-row">
     <OptionPanel />
-    <Reader :image="String(route.query.url)" page-fit="original"></Reader>
+    <Reader :image="String(route.query.url)"></Reader>
   </div>
 </template>
