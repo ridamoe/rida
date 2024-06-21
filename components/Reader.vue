@@ -4,8 +4,17 @@ const sources = useSourcesStore();
 
 const currentPage = ref(0);
 
+watchEffect(() => {
+  if (currentPage.value < 0) currentPage.value = 0;
+  if (currentPage.value >= sources.current.pageCount) {
+    currentPage.value = sources.current.pageCount - 1;
+  }
+});
+
 const currentImageSrc = computed(() => {
-  return sources.getPage(currentPage.value);
+  if (sources.current) {
+    return sources.getPage(sources.currentSourceId!, currentPage.value);
+  }
 });
 
 const pageFitImageClass = computed(() => {
@@ -28,10 +37,35 @@ const pageFitImageClass = computed(() => {
       return "";
   }
 });
+
+function onClick(e: MouseEvent) {
+  let w = (e.target as HTMLElement).offsetWidth;
+  let rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  let calc = w / 2 - e.offsetX;
+  if (Math.abs(calc) > 2 * rem) {
+    currentPage.value += calc > 0 ? 1 : -1;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("keydown", function (event) {
+    switch (event.key) {
+      case "ArrowLeft":
+        currentPage.value++;
+        break;
+      case "ArrowRight":
+        currentPage.value--;
+        break;
+      case "j":
+        sources.changeSource();
+    }
+  });
+});
 </script>
 
 <template>
   <div
+    @click="onClick"
     class="max-w-screen align-start relative flex h-screen min-h-screen grow overflow-y-auto bg-black"
   >
     <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />

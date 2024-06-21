@@ -130,8 +130,8 @@ const sources = useSourcesStore();
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
       <template v-for="(source, index) in sources.sourceList">
         <SourceSelect
-          @click="() => (sources.currentSourceIndex = index)"
-          :selected="index == sources.currentSourceIndex"
+          @click="() => sources.changeSource(index)"
+          :selected="index == sources.currentSourceId"
           >{{ source.name }}</SourceSelect
         >
       </template>
