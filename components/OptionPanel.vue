@@ -126,7 +126,7 @@ const sources = useSourcesStore();
       <IconButton icon="i-[solar--settings-bold]" class="mx-2" />
     </div>
     <div class="mb-6 flex w-full flex-col">
-      <h2 class="w-full text-center">Sources</h2>
+      <h2 class="w-full p-2 text-center">Sources</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
       <template v-for="(source, index) in sources.sourceList">
         <SourceSelect
