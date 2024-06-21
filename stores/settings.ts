@@ -8,7 +8,7 @@ interface State {
     | "limit-all"
     | "limit-height"
     | "limit-width";
-  pinProgress: boolean;
+  pinPageSelector: boolean;
   spreadLayout: "single-page" | "double-page" | "double-page-odd";
   readDirection: "left-to-right" | "right-to-left" | "vertical";
 }
@@ -17,7 +17,7 @@ export const useSettingsStore = defineStore("settingsStore", {
   state: (): State => ({
     showPanel: true,
     pageFit: "limit-all",
-    pinProgress: true,
+    pinPageSelector: true,
     spreadLayout: "single-page",
     readDirection: "right-to-left",
   }),

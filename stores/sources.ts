@@ -8,21 +8,27 @@ interface MangaSource {
 
 export const useSourcesStore = defineStore("sourcesStore", {
   state: () => ({
-    sourceList: [] as Array<MangaSource>,
+    _sourceList: [] as Array<MangaSource>,
     currentSourceId: undefined as number | undefined,
     loadedUrls: new Set([]) as Set<string>,
-    loadedIds: [] as Array<[number, number]>,
+    _loadedIds: [] as Array<Array<number>>,
   }),
   getters: {
     current(state) {
       let source: MangaSource | undefined;
-      if (state.sourceList != undefined && state.currentSourceId != undefined) {
-        source = state.sourceList[state.currentSourceId];
-      } else source = undefined;
+      let loadedPages: Array<number> | undefined;
+      if (
+        state._sourceList != undefined &&
+        state.currentSourceId != undefined
+      ) {
+        source = state._sourceList[state.currentSourceId];
+        loadedPages = state._loadedIds[state.currentSourceId];
+      }
 
       return {
         source,
         pageCount: source?.pages.length ?? 0,
+        loadedPages,
       };
     },
   },
@@ -35,32 +41,43 @@ export const useSourcesStore = defineStore("sourcesStore", {
     changeSource(index: number | undefined = undefined) {
       if (this.currentSourceId != undefined) {
         if (index == undefined) index = this.currentSourceId + 1;
-        this.currentSourceId = index % this.sourceList.length;
+        this.currentSourceId = index % this._sourceList.length;
       }
     },
-    preloadImage(url: string, imageData: [number, number]) {
+    preloadImage(url: string, source: number, index: number) {
       return new Promise<void>((resolve) => {
         if (!this.loadedUrls.has(url)) {
           const img = new Image();
           img.src = url;
           img.onload = () => {
             this.loadedUrls.add(url);
-            this.loadedIds.push(imageData);
+            this._loadedIds[source].push(index);
             resolve();
           };
           img.onerror = () => resolve();
         } else {
+          this._loadedIds[source].push(index);
           resolve();
         }
       });
     },
     preloadImages(start = 0, max = null) {
-      for (let i = 0; i < this.sourceList.length; i++) {
-        let pagesToLoadCount = this.sourceList[i].pages.length;
-        if (max) Math.min(pagesToLoadCount, max);
-        for (let j = start; j < pagesToLoadCount; j++) {
+      let maxPages = Math.max(
+        ...this._sourceList.map((el) => {
+          let pagesToLoadCount = el.pages.length;
+          if (max) pagesToLoadCount = Math.min(pagesToLoadCount, max);
+          return pagesToLoadCount;
+        })
+      );
+
+      for (let i = 0; i < this._sourceList.length; i++) {
+        this._loadedIds[i] = [];
+      }
+
+      for (let j = start; j < maxPages; j++) {
+        for (let i = 0; i < this._sourceList.length; i++) {
           let src = this.getPage(i, j);
-          if (src) this.preloadImage(src, [i, j]);
+          if (src) this.preloadImage(src, i, j);
         }
       }
     },
@@ -69,10 +86,10 @@ export const useSourcesStore = defineStore("sourcesStore", {
 
       switch (format) {
         case "json":
-          this.sourceList = JSON.parse(atob(data));
+          this._sourceList = JSON.parse(atob(data));
           break;
         case "pastebin":
-          this.sourceList = JSON.parse(
+          this._sourceList = JSON.parse(
             await $fetch(
               // TODO: avoid using external cors proxy
               "https://corsproxy.io/?https://pastebin.com/raw/" + data
@@ -80,7 +97,7 @@ export const useSourcesStore = defineStore("sourcesStore", {
           );
           break;
         case "gist":
-          this.sourceList = JSON.parse(
+          this._sourceList = JSON.parse(
             await $fetch("https://gist.githubusercontent.com/" + data)
           );
           break;
@@ -94,12 +111,12 @@ export const useSourcesStore = defineStore("sourcesStore", {
     },
     getPage(sourceId: number, pageId: number) {
       if (
-        this.sourceList[sourceId] &&
-        pageId < this.sourceList[sourceId].pages.length
+        this._sourceList[sourceId] &&
+        pageId < this._sourceList[sourceId].pages.length
       ) {
         return (
-          (this.sourceList[sourceId].pages_base ?? "") +
-          this.sourceList[sourceId].pages[pageId]
+          (this._sourceList[sourceId].pages_base ?? "") +
+          this._sourceList[sourceId].pages[pageId]
         );
       }
     },

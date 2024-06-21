@@ -66,8 +66,11 @@ onMounted(() => {
 <template>
   <div
     @click="onClick"
-    class="max-w-screen align-start relative flex h-screen min-h-screen grow overflow-y-auto bg-black"
+    class="max-w-screen align-start relative flex h-screen grow select-none bg-black"
   >
-    <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />
+    <PageSelector v-model="currentPage" />
+    <div class="h-full w-full overflow-y-auto">
+      <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />
+    </div>
   </div>
 </template>

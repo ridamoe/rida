@@ -119,7 +119,7 @@ const sources = useSourcesStore();
               icon: 'i-[ic--round-pin-off]',
             },
           ]"
-          v-model="settings.pinProgress"
+          v-model="settings.pinPageSelector"
         />
       </div>
       <div class="h-full w-[1.5px] rounded-xl bg-rose-600"></div>
@@ -128,7 +128,7 @@ const sources = useSourcesStore();
     <div class="mb-6 flex w-full flex-col">
       <h2 class="w-full p-2 text-center">Sources</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
-      <template v-for="(source, index) in sources.sourceList">
+      <template v-for="(source, index) in sources._sourceList">
         <SourceSelect
           @click="() => sources.changeSource(index)"
           :selected="index == sources.currentSourceId"
