@@ -29,7 +29,10 @@ export const useSourcesStore = defineStore("sourcesStore", {
           break;
         case "pastebin":
           this.sourceList = JSON.parse(
-            await $fetch("https://pastebin.com/raw/" + data)
+            await $fetch(
+              // TODO: avoid using external cors proxy
+              "https://corsproxy.io/?https://pastebin.com/raw/" + data
+            )
           );
           break;
         case "gist":
