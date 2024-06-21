@@ -1,9 +1,12 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
+const sources = useSourcesStore();
 
-const props = defineProps<{
-  image?: string;
-}>();
+const currentPage = ref(0);
+
+const currentImageSrc = computed(() => {
+  return sources.getPage(currentPage.value);
+});
 
 const pageFitImageClass = computed(() => {
   switch (settings.pageFit) {
@@ -31,6 +34,6 @@ const pageFitImageClass = computed(() => {
   <div
     class="max-w-screen align-start relative flex h-screen min-h-screen grow overflow-y-auto bg-black"
   >
-    <img :src="image" :class="['m-auto', pageFitImageClass]" />
+    <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />
   </div>
 </template>

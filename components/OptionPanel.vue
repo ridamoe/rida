@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
+const sources = useSourcesStore();
 </script>
 
 <template>
@@ -127,8 +128,13 @@ const settings = useSettingsStore();
     <div class="mb-6 flex w-full flex-col">
       <h2 class="w-full text-center">Sources</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
-      <SourceSelect :selected="true">Source one</SourceSelect>
-      <SourceSelect>Source two</SourceSelect>
+      <template v-for="(source, index) in sources.sourceList">
+        <SourceSelect
+          @click="() => (sources.currentSourceIndex = index)"
+          :selected="index == sources.currentSourceIndex"
+          >{{ source.name }}</SourceSelect
+        >
+      </template>
     </div>
   </aside>
 </template>
