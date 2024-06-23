@@ -9,7 +9,7 @@ interface MangaSource {
 export const useSourcesStore = defineStore("sourcesStore", {
   state: () => ({
     _sourceList: [] as Array<MangaSource>,
-    currentSourceId: undefined as number | undefined,
+    currentSourceId: 0,
     loadedUrls: new Set([]) as Set<string>,
     _loadedIds: [] as Array<Array<number>>,
   }),
@@ -17,10 +17,7 @@ export const useSourcesStore = defineStore("sourcesStore", {
     current(state) {
       let source: MangaSource | undefined;
       let loadedPages: Array<number> | undefined;
-      if (
-        state._sourceList != undefined &&
-        state.currentSourceId != undefined
-      ) {
+      if (state._sourceList != undefined) {
         source = state._sourceList[state.currentSourceId];
         loadedPages = state._loadedIds[state.currentSourceId];
       }
@@ -39,10 +36,8 @@ export const useSourcesStore = defineStore("sourcesStore", {
      * @param index
      */
     changeSource(index: number | undefined = undefined) {
-      if (this.currentSourceId != undefined) {
-        if (index == undefined) index = this.currentSourceId + 1;
-        this.currentSourceId = index % this._sourceList.length;
-      }
+      if (index == undefined) index = this.currentSourceId + 1;
+      this.currentSourceId = index % this._sourceList.length;
     },
     preloadImage(url: string, source: number, index: number) {
       return new Promise<void>((resolve) => {
@@ -109,14 +104,15 @@ export const useSourcesStore = defineStore("sourcesStore", {
 
       this.currentSourceId = 0;
     },
-    getPage(sourceId: number, pageId: number) {
+    getPage(sourceId: number, page: number) {
+      page = clamp(page - 1, 0);
       if (
         this._sourceList[sourceId] &&
-        pageId < this._sourceList[sourceId].pages.length
+        page < this._sourceList[sourceId].pages.length
       ) {
         return (
           (this._sourceList[sourceId].pages_base ?? "") +
-          this._sourceList[sourceId].pages[pageId]
+          this._sourceList[sourceId].pages[page]
         );
       }
     },

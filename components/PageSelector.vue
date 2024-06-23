@@ -11,20 +11,20 @@ const currentPage = defineModel<number>();
   >
     <span
       class="pointer-events-none absolute right-1/2 z-10 self-center align-middle text-sm font-bold text-white"
-      >{{ (currentPage ?? 0) + 1 }}/{{ sources.current.pageCount }}</span
+      >{{ currentPage ?? 1 }}/{{ sources.current.pageCount }}</span
     >
     <template v-for="n in sources.current.pageCount">
       <div
         @click="
           () => {
-            currentPage = sources.current.pageCount - n;
+            currentPage = sources.current.pageCount - n + 1;
           }
         "
         class="relative flex h-8 grow items-end hover:bottom-1"
         :class="[
           {
             [tw`bg-gradient-to-t from-white`]:
-              sources.current.pageCount - n == currentPage,
+              sources.current.pageCount - n + 1 == currentPage,
           },
         ]"
       >

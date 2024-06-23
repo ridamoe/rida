@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
 const sources = useSourcesStore();
+const progress = useProgressStore();
 </script>
 
 <template>
@@ -28,12 +29,16 @@ const sources = useSourcesStore();
         :class="settings.showPanel ? 'left-[0.5rem]' : 'right-[0.5rem]'"
       />
     </div>
-    <header class="flex h-12 w-full align-middle">
-      <IconButton icon="i-[ic--round-close]" class="p-2" />
-      <h1 class="flex-1 p-3 text-center">
-        <a class="hover:underline" href="#">Example Title</a>
+    <header class="flex min-h-12 w-full align-middle">
+      <div class="h-12">
+        <IconButton icon="i-[ic--round-close]" class="p-2" />
+      </div>
+      <h1 class="flex h-max p-3 text-center">
+        <a class="text-balance break-words text-lg hover:underline" href="#">{{
+          progress.title
+        }}</a>
       </h1>
-      <div class="h-12 w-12"></div>
+      <div class="h-12 w-12 flex-none"></div>
     </header>
     <div class="flex h-8 w-full items-center justify-end gap-1 px-2 py-1.5">
       <IconButton icon="i-[mdi--share-variant-outline]" />
@@ -42,7 +47,7 @@ const sources = useSourcesStore();
       class="flex h-12 w-full justify-between bg-neutral-900 p-2.5 text-center align-middle"
     >
       <IconButton icon="i-[iconamoon--arrow-left-2]" />
-      <p>Chapter 1</p>
+      <p>Chapter {{ progress.chapter }}</p>
       <IconButton icon="i-[iconamoon--arrow-right-2]" />
     </div>
     <div class="flex h-8 w-full justify-end gap-1 py-1.5 align-middle">

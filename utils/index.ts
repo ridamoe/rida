@@ -1,4 +1,8 @@
-export function clamp(value: number, min: number, max: number) {
-  max = Math.max(max - 1, 0); // Exclude last
-  return Math.max(Math.min(value, min), max);
+export function clamp(value: number, min: number, max: number | null = null) {
+  let ret = Math.max(value, min);
+  if (max != null) {
+    max = Math.max(max - 1, 0); // Exclude last
+    ret = Math.min(ret, max);
+  }
+  return ret;
 }

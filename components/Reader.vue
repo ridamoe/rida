@@ -1,19 +1,11 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
+const progress = useProgressStore();
 const sources = useSourcesStore();
-
-const currentPage = ref(0);
-
-watchEffect(() => {
-  if (currentPage.value < 0) currentPage.value = 0;
-  if (currentPage.value >= sources.current.pageCount) {
-    currentPage.value = sources.current.pageCount - 1;
-  }
-});
 
 const currentImageSrc = computed(() => {
   if (sources.current) {
-    return sources.getPage(sources.currentSourceId!, currentPage.value);
+    return sources.getPage(sources.currentSourceId!, progress.page);
   }
 });
 
@@ -43,7 +35,7 @@ function onClick(e: MouseEvent) {
   let rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
   let calc = w / 2 - e.offsetX;
   if (Math.abs(calc) > 2 * rem) {
-    currentPage.value += calc > 0 ? 1 : -1;
+    progress.page += calc > 0 ? 1 : -1;
   }
 }
 
@@ -51,10 +43,10 @@ onMounted(() => {
   document.addEventListener("keydown", function (event) {
     switch (event.key) {
       case "ArrowLeft":
-        currentPage.value++;
+        progress.page++;
         break;
       case "ArrowRight":
-        currentPage.value--;
+        progress.page--;
         break;
       case "j":
         sources.changeSource();
@@ -68,7 +60,7 @@ onMounted(() => {
     @click="onClick"
     class="max-w-screen align-start relative flex h-screen grow select-none bg-black"
   >
-    <PageSelector v-model="currentPage" />
+    <PageSelector v-model="progress.page" />
     <div class="h-full w-full overflow-y-auto">
       <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />
     </div>
