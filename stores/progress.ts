@@ -2,7 +2,7 @@ export const useProgressStore = defineStore("progressStore", () => {
   const sources = useSourcesStore();
 
   const title = ref("Unknown");
-  const chapter = ref(1);
+  const chapter = ref("1");
   const page = ref(1);
   const source = toRef(sources.currentSourceId);
 
@@ -18,8 +18,7 @@ export const useProgressStore = defineStore("progressStore", () => {
   }
 
   function setChapter(value: any) {
-    value = parseInt(value);
-    chapter.value = value ? value : 1;
+    chapter.value = value ? value : "1";
   }
 
   function setPage(value: any) {
