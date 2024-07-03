@@ -16,4 +16,10 @@ export default defineNuxtConfig({
   tailwindcss: {
     cssPath: "~/assets/css/tailwind.css",
   },
+  runtimeConfig: {
+    public: {
+      apiEndpoint: "",
+      corsEndpoint: "https://corsproxy.io/?",
+    },
+  },
 });
