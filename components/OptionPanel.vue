@@ -133,10 +133,13 @@ const progress = useProgressStore();
     <div class="mb-6 flex w-full flex-col">
       <h2 class="w-full p-2 text-center">Sources</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
-      <template v-for="(source, index) in sources._sourceList">
+      <template
+        v-for="(source, index) in Object.values(sources.sources)"
+        :key="source.name"
+      >
         <SourceSelect
-          @click="() => sources.changeSource(index)"
-          :selected="index == sources.currentSourceId"
+          @click="() => progress.setSource(index)"
+          :selected="index == progress.source"
           >{{ source.name }}</SourceSelect
         >
       </template>

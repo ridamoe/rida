@@ -1,13 +1,31 @@
 <script setup lang="ts">
+import { isClient } from "@vueuse/core";
+
 const settings = useSettingsStore();
 const progress = useProgressStore();
 const sources = useSourcesStore();
 
-const currentImageSrc = computed(() => {
-  if (sources.current) {
-    return sources.getPage(sources.currentSourceId!, progress.page);
-  }
+const image = ref();
+
+useAsyncData(
+  `pages-test-${progress.chapter}`,
+  async () => {
+    return await sources.current?.chapters[progress.chapter]
+      .fetchPages()
+      .then(() => true);
+  },
+  { watch: [() => progress.source, () => progress.chapter] }
+);
+
+const pages = computed(
+  () => sources.current?.chapters[progress.chapter]?.pages
+);
+
+watchEffect(() => {
+  pages.value?.map(sources.preloadURL);
 });
+
+const currentSrc = computed(() => pages.value?.at(progress.page - 1));
 
 const pageFitImageClass = computed(() => {
   switch (settings.pageFit) {
@@ -39,6 +57,12 @@ function onClick(e: MouseEvent) {
   }
 }
 
+const onImageLoad = () => sources.setLoaded(currentSrc.value!);
+
+onMounted(() => {
+  onImageLoad();
+});
+
 onMounted(() => {
   document.addEventListener("keydown", function (event) {
     switch (event.key) {
@@ -49,7 +73,7 @@ onMounted(() => {
         progress.page--;
         break;
       case "j":
-        sources.changeSource();
+        progress.setSource(progress.source + 1);
     }
   });
 });
@@ -60,9 +84,16 @@ onMounted(() => {
     @click="onClick"
     class="max-w-screen align-start relative flex h-screen grow select-none bg-black"
   >
-    <PageSelector v-model="progress.page" />
+    <PageSelector v-model="progress.page" :current-src="currentSrc" />
     <div class="h-full w-full overflow-y-auto">
-      <img :src="currentImageSrc" :class="['m-auto', pageFitImageClass]" />
+      <img
+        v-show="currentSrc && sources.loadedUrls.has(currentSrc)"
+        ref="image"
+        @load="onImageLoad"
+        :src="currentSrc"
+        :class="['m-auto', pageFitImageClass]"
+      />
+      <div v-show="currentSrc && !sources.loadedUrls.has(currentSrc)"></div>
     </div>
   </div>
 </template>

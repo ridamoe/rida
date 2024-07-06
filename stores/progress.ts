@@ -4,11 +4,31 @@ export const useProgressStore = defineStore("progressStore", () => {
   const title = ref("Unknown");
   const chapter = ref("1");
   const page = ref(1);
-  const source = toRef(sources.currentSourceId);
+  const source = ref(0);
 
-  function setSource(value: any) {
-    value = parseInt(value);
-    source.value = value ? value : 0;
+  const pageCount = computed(
+    () => sources.current?.chapters[chapter.value]?.pages?.length ?? 1
+  );
+
+  // const pages = useAsyncData("current-pages", async () => {
+  //   return await
+  // });
+
+  function setSource(locator: number | string) {
+    let index: number = -1;
+
+    if (typeof locator == "string") {
+      let parsed = parseInt(locator);
+      if (!isNaN(parsed)) index = parsed;
+      else {
+        index = Object.keys(sources.sources).findIndex((v) => v == locator);
+      }
+    } else if (typeof locator == "number") index = locator;
+
+    if (index == -1) index = 0;
+    index %= Object.values(sources.sources).length;
+    console.log("setSource", locator, index);
+    source.value = index;
   }
 
   function setTitle(value: any) {
@@ -23,14 +43,19 @@ export const useProgressStore = defineStore("progressStore", () => {
 
   function setPage(value: any) {
     value = parseInt(value);
-    page.value = value ? clamp(value, 0, sources.current.pageCount) : 1;
+    page.value = value;
   }
 
-  watchEffect(() => {
-    if (page.value <= 1) page.value = 1;
-    if (page.value >= sources.current.pageCount) {
-      page.value = sources.current.pageCount;
+  function clampPage(page: number): number {
+    if (page < 1) page = 1;
+    if (page > pageCount.value) {
+      page = pageCount.value;
     }
+    return page;
+  }
+
+  watch([page, pageCount], () => {
+    page.value = clampPage(page.value);
   });
 
   const status = computed(() => {

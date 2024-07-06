@@ -7,19 +7,24 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
   ],
+
   tailwindcss: {
     cssPath: "~/assets/css/tailwind.css",
   },
+
   runtimeConfig: {
     public: {
       apiEndpoint: "",
       corsEndpoint: "https://corsproxy.io/?",
     },
   },
+
+  compatibilityDate: "2024-07-05",
 });
