@@ -7,7 +7,9 @@ const configData = useConfigDataStore();
 const progress = useProgressStore();
 
 if (typeof route.query.d == "string") {
-  await configData.setup(route.query.d);
+  useAsyncData("config-data", async () => {
+    return await configData.setup(route.query.d).then(() => true);
+  });
 }
 
 function updateUrl() {
