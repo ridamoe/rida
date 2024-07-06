@@ -43,13 +43,7 @@ const progress = useProgressStore();
     <div class="flex h-8 w-full items-center justify-end gap-1 px-2 py-1.5">
       <IconButton icon="i-[mdi--share-variant-outline]" />
     </div>
-    <div
-      class="flex h-12 w-full justify-between bg-neutral-900 p-2.5 text-center align-middle"
-    >
-      <IconButton icon="i-[iconamoon--arrow-left-2]" />
-      <p>Chapter {{ progress.chapter }}</p>
-      <IconButton icon="i-[iconamoon--arrow-right-2]" />
-    </div>
+    <ChapterSelector />
     <div class="flex h-8 w-full justify-end gap-1 py-1.5 align-middle">
       <div class="mx-3 flex h-full gap-6">
         <IconCycleButton
