@@ -134,6 +134,7 @@ const progress = useProgressStore();
         <SourceSelect
           @click="() => progress.setSource(index)"
           :selected="index == progress.source"
+          :disabled="!Object.keys(source.chapters).includes(progress.chapter)"
           >{{ source.name }}</SourceSelect
         >
       </template>
