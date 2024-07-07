@@ -5,24 +5,45 @@ const route = useRoute();
 const router = useRouter();
 const configData = useConfigDataStore();
 const progress = useProgressStore();
+const sources = useSourcesStore();
 
-if (typeof route.query.d == "string") {
-  useAsyncData("config-data", async () => {
-    return await configData.setup(route.query.d).then(() => true);
-  });
+let loadConfig = useAsyncData("config-data", async () => {
+  return await configData.setup(route.query.d).then(() => true);
+});
+
+if (Array.isArray(route.params.slug)) {
+  progress.setTitle(route.params.slug.at(-2));
+  progress.setChapter(route.params.slug.at(-1));
 }
+
+if (typeof route.query.page == "string") {
+  progress.setPage(route.query.page);
+}
+
+useAsyncData("set-title", async () => {
+  const API = useApi();
+  await loadConfig;
+  if (sources.current && progress.title == undefined) {
+    let spec = sources.current?._spec;
+    if ("name" in spec) progress.setTitle(spec.name);
+    else {
+      let series = await API.getSeries(spec);
+      if (series.result?.title) progress.setTitle(series.result.title);
+      updateUrl();
+    }
+  }
+  return true;
+});
 
 function updateUrl() {
   let routeParams = {
     name: "read-slug",
     params: {
-      slug: [
-        progress.title.replace(/ /g, "_"),
-        progress.chapter,
-        String(progress.page),
-      ].join("/"),
+      slug: [progress.title?.replace(/ /g, "_"), progress.chapter]
+        .filter((v) => v)
+        .join("/"),
     },
-    query: { ...route.query },
+    query: { ...route.query, page: progress.page },
   };
   const newUrl = router.resolve(routeParams);
   if (newUrl.fullPath != route.fullPath)
@@ -34,25 +55,17 @@ function updateUrl() {
     }
 }
 
-if (typeof route.query.sid == "string") {
-  let sid = parseInt(route.query.sid);
-}
+watchEffect(() => {
+  progress.title;
+  progress.chapter;
+  progress.page;
+  progress.status;
 
-if (Array.isArray(route.params.slug)) {
-  progress.setTitle(route.params.slug.at(-3));
-  progress.setChapter(route.params.slug.at(-2));
-  progress.setPage(route.params.slug.at(-1));
-}
-updateUrl();
-
-useHead({
-  title: progress.status,
+  useHead({
+    title: progress.status,
+  });
+  updateUrl();
 });
-
-watch(
-  [() => progress.title, () => progress.chapter, () => progress.page],
-  updateUrl
-);
 </script>
 
 <template>

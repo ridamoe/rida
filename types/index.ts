@@ -24,7 +24,10 @@ declare global {
   }
 
   interface APISeriesResponse {
-    result: { chapters?: string[] } | null;
+    result: {
+      title?: string;
+      chapters?: string[];
+    } | null;
   }
 
   interface APIChapterPagesResponse {

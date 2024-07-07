@@ -1,7 +1,7 @@
 export const useProgressStore = defineStore("progressStore", () => {
   const sources = useSourcesStore();
 
-  const title = ref("Unknown");
+  const title = ref();
   const chapter = ref("1");
   const page = ref(1);
   const source = ref(0);
@@ -32,9 +32,8 @@ export const useProgressStore = defineStore("progressStore", () => {
   }
 
   function setTitle(value: any) {
-    let t = typeof value == "string" ? value : "Unknown";
-    t = t.replace(/_/g, " ");
-    title.value = t;
+    if (value && typeof value == "string")
+      title.value = value.replace(/_/g, " ");
   }
 
   function setChapter(value: any) {
@@ -58,9 +57,9 @@ export const useProgressStore = defineStore("progressStore", () => {
     page.value = clampPage(page.value);
   });
 
-  const status = computed(() => {
+  const status = () => {
     return `${title.value} - Chapter ${chapter.value}`;
-  });
+  };
 
   return {
     source,
