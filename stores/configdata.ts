@@ -1,3 +1,5 @@
+import { isClient } from "@vueuse/core";
+
 export const useConfigDataStore = defineStore("configDataStore", () => {
   const runtimeConfig = useRuntimeConfig();
   const sourcesStore = useSourcesStore();
@@ -7,18 +9,16 @@ export const useConfigDataStore = defineStore("configDataStore", () => {
 
   async function loadConfigData(dataString: string) {
     let [format, data] = dataString.split(":");
-
+    const corsEndpoint = isClient
+      ? runtimeConfig.public.corsEndpoint
+      : runtimeConfig.corsEndpoint;
     switch (format) {
       case "json":
         configData.value = JSON.parse(atob(data));
         break;
       case "pastebin":
         configData.value = JSON.parse(
-          await $fetch(
-            runtimeConfig.public.corsEndpoint +
-              "https://pastebin.com/raw/" +
-              data
-          )
+          await $fetch(corsEndpoint + "https://pastebin.com/raw/" + data)
         );
         break;
       case "gist":

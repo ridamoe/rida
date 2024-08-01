@@ -1,3 +1,5 @@
+import { isClient } from "@vueuse/core";
+
 export const useApi = () => {
   const runtimeConfig = useRuntimeConfig();
 
@@ -24,7 +26,10 @@ export const useApi = () => {
 
   return class API {
     static async get(url: string) {
-      const URL = runtimeConfig.public.apiEndpoint + "/" + url;
+      const apiEndpoint = isClient
+        ? runtimeConfig.public.apiEndpoint
+        : runtimeConfig.apiEndpoint;
+      const URL = apiEndpoint + "/" + url;
       return await $fetch<APIResponse>(URL);
     }
     static async getSeries(remote: RemoteSpec): Promise<APISeriesResponse> {

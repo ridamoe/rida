@@ -20,6 +20,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    apiEndpoint: "",
+    corsEndpoint: "https://corsproxy.io/?",
+
     public: {
       apiEndpoint: "",
       corsEndpoint: "https://corsproxy.io/?",
