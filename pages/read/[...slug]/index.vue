@@ -12,7 +12,6 @@ let loadConfig = useAsyncData("config-data", async () => {
 });
 
 if (Array.isArray(route.params.slug)) {
-  progress.setTitle(route.params.slug.at(-2));
   progress.setChapter(route.params.slug.at(-1));
 }
 
@@ -36,12 +35,17 @@ useAsyncData("set-title", async () => {
 });
 
 function updateUrl() {
+  let urlTitle = progress.title?.toLowerCase() ?? "";
+  urlTitle = urlTitle.replace(/\s?~.*?~\s?/g, "");
+  urlTitle = urlTitle.replace(/\s\.\s*?.*/g, "");
+  urlTitle = urlTitle.replace(/[^a-z0-9 ]/g, "");
+  urlTitle = urlTitle.replace(/ /g, "-");
+  if (!urlTitle) urlTitle = route.params.slug.at(-2);
+
   let routeParams = {
     name: "read-slug",
     params: {
-      slug: [progress.title?.replace(/ /g, "_"), progress.chapter]
-        .filter((v) => v)
-        .join("/"),
+      slug: [urlTitle, progress.chapter].filter((v) => v).join("/"),
     },
     query: { ...route.query, page: progress.page },
   };
