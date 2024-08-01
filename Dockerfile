@@ -1,7 +1,7 @@
 FROM node:20.15 AS base
 
-RUN mkdir /home/node/src
-WORKDIR /home/node/src
+RUN mkdir /src
+WORKDIR /src
 
 COPY package*.json .
 RUN npm install
@@ -18,9 +18,9 @@ RUN npm run build
 
 FROM node:20.15 AS prod
 
-RUN mkdir /home/node/app
-WORKDIR /home/node/app
+RUN mkdir /app
+WORKDIR /app
 
-COPY --from=build /home/node/src/.output/ .
+COPY --from=build /src/.output/ .
 
 CMD ["node", "server/index.mjs"]
