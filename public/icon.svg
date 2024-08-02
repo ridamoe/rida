@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Box_Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 130">
+  <defs>
+    <style>
+      .background {
+        fill: #0f172a;
+        /* fill: transparent; */
+      }
+
+      .accent {
+        fill: #4ade80;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="background" width="130" height="130" rx="25" ry="25"/>
+    <g>
+      <rect class="accent" x="77.77" y="13.5" width="24.23" height="103"/>
+      <path class="accent" d="M70.21,13.64c-23.31,0-42.21,12-42.21,26.81s18.9,26.81,42.21,26.81"/>
+      <polygon class="accent" points="65.21 81.28 28.02 116.25 54.56 116.25 65.21 106.23 70.21 101.53 70.21 76.58 65.21 81.28"/>
+    </g>
+  </g>
+</svg>
