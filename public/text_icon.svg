@@ -1,30 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Text_Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 311.11 130">
-  <defs>
-    <style>
-      .background {
-        fill: #0f172a;
-      }
-
-      .accent {
-        fill: #4ade80;
-      }
-    </style>
-  </defs>
+<svg role="img" id="text_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 312 130">
   <g>
-    <rect class="background" width="130" height="130" rx="25" ry="25"/>
-    <g>
-      <rect class="background" x="139.87" y="58.85" width="24.23" height="57.65"/>
-      <circle class="background" cx="152.11" cy="40.24" r="12"/>
-      <path class="background" d="M205.43,69.5c-18.96,0-34.32,10.52-34.32,23.5s15.37,23.5,34.32,23.5"/>
-      <path class="background" d="M279.11,75.5c-18.96,0-34.32,9.18-34.32,20.5s15.37,20.5,34.32,20.5"/>
-      <rect class="background" x="213.87" y="13.53" width="24.23" height="102.97"/>
-      <path class="background" d="M275.11,66.5c8,0,12,5.25,12,9,0,10,.1,41,.1,41h23.9s0-45.55,0-45.85c0-15.5-9.03-28.15-33-28.15-9.73,0-16.8,1.69-22,5l8,21s3-2,11-2Z"/>
+    <g id="background">
+      <rect fill="currentColor" width="130" height="130" rx="25" ry="25"/>
+      <rect fill="currentColor" x="139.87" y="58.85" width="24.23" height="57.65"/>
+      <circle fill="currentColor" cx="152.11" cy="40.24" r="12"/>
+      <path fill="currentColor" d="M205.43,69.5c-18.96,0-34.32,10.52-34.32,23.5s15.37,23.5,34.32,23.5"/>
+      <path fill="currentColor" d="M279.11,75.5c-18.96,0-34.32,9.18-34.32,20.5s15.37,20.5,34.32,20.5"/>
+      <rect fill="currentColor" x="213.87" y="13.53" width="24.23" height="102.97"/>
+      <path fill="currentColor" d="M275.11,66.5c8,0,12,5.25,12,9,0,10,.1,41,.1,41h23.9s0-45.55,0-45.85c0-15.5-9.03-28.15-33-28.15-9.73,0-16.8,1.69-22,5l8,21s3-2,11-2Z"/>
     </g>
-    <g>
-      <rect class="accent" x="77.77" y="13.5" width="24.23" height="103"/>
-      <path class="accent" d="M70.21,13.64c-23.31,0-42.21,12-42.21,26.81s18.9,26.81,42.21,26.81"/>
-      <polygon class="accent" points="65.21 81.28 28.02 116.25 54.56 116.25 65.21 106.23 70.21 101.53 70.21 76.58 65.21 81.28"/>
+    <g id="accent_logo">
+      <rect fill="currentColor" x="77.77" y="13.5" width="24.23" height="103"/>
+      <path fill="currentColor" d="M70.21,13.64c-23.31,0-42.21,12-42.21,26.81s18.9,26.81,42.21,26.81"/>
+      <polygon fill="currentColor" points="65.21 81.28 28.02 116.25 54.56 116.25 65.21 106.23 70.21 101.53 70.21 76.58 65.21 81.28"/>
     </g>
   </g>
 </svg>
