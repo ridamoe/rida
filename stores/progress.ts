@@ -53,6 +53,10 @@ export const useProgressStore = defineStore("progressStore", () => {
     return page;
   }
 
+  watch([chapter], () => {
+    page.value = 1;
+  });
+
   watch([page, pageCount], () => {
     page.value = clampPage(page.value);
   });
