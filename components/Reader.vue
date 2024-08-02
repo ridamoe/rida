@@ -53,7 +53,8 @@ function onClick(e: MouseEvent) {
   let rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
   let calc = w / 2 - e.offsetX;
   if (Math.abs(calc) > 2 * rem) {
-    progress.page += calc > 0 ? 1 : -1;
+    if (calc > 0) progress.next();
+    else progress.prev();
   }
 }
 
@@ -67,10 +68,10 @@ onMounted(() => {
   document.addEventListener("keydown", function (event) {
     switch (event.key) {
       case "ArrowLeft":
-        progress.page++;
+        progress.next();
         break;
       case "ArrowRight":
-        progress.page--;
+        progress.prev();
         break;
       case "j":
         progress.setSource(progress.source + 1);

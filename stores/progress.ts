@@ -61,11 +61,34 @@ export const useProgressStore = defineStore("progressStore", () => {
     return `${title.value} - Chapter ${chapter.value}`;
   };
 
+  const next = () => {
+    let chapterKeys = Object.keys(sources.current?.chapters!);
+    let index = chapterKeys.findIndex((v) => v == chapter.value);
+    if (page.value + 1 > pageCount.value) {
+      if (index + 1 < chapterKeys.length) {
+        chapter.value = chapterKeys[index + 1];
+      }
+    } else page.value++;
+  };
+
+  const prev = () => {
+    let chapterKeys = Object.keys(sources.current?.chapters!);
+    let index = chapterKeys.findIndex((v) => v == chapter.value);
+    if (page.value - 1 < 1) {
+      if (index - 1 > 0) {
+        chapter.value = chapterKeys[index - 1];
+      }
+    } else page.value--;
+  };
+
   return {
     source,
     title,
     chapter,
     page,
+
+    next,
+    prev,
 
     setSource,
     setTitle,
