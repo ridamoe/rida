@@ -7,14 +7,15 @@ declare global {
 
   interface RemoteSpec {
     website: string;
-    params: string[];
-    chapters?: string[];
+    params: string[] | Record<string, string>;
   }
 
   interface ConfigDataSpec {
-    remotes?: RemoteSpec[];
+    remotes?: {
+      [chapter: string]: RemoteSpec[];
+    };
     locals?: {
-      [key: string]: LocalSpec[];
+      [chapter: string]: LocalSpec[];
     };
   }
 

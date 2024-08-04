@@ -15,6 +15,15 @@ export const useSourcesStore = defineStore(
       return Object.values(toValue(sources)).at(progress.source);
     });
 
+    const chapters = computed(() => {
+      let all = [];
+      for (let source of Object.values(toValue(sources))) {
+        all.push(...Object.keys(source.chapters));
+      }
+      all = Array.from(new Set(all.sort())); // Remove duplicates, keep order
+      return all;
+    });
+
     function preloadURL(url: string) {
       return new Promise<void>((resolve) => {
         if (!loadedUrls.value.has(url)) {
@@ -50,6 +59,7 @@ export const useSourcesStore = defineStore(
       loadedUrls,
       sources,
       current,
+      chapters,
 
       preloadURL,
       addSource,

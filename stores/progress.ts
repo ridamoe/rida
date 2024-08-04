@@ -2,9 +2,9 @@ export const useProgressStore = defineStore("progressStore", () => {
   const sources = useSourcesStore();
 
   const title = ref();
-  const chapter = ref("1");
+  const chapter = ref();
   const page = ref(1);
-  const source = ref(0);
+  const source = ref();
 
   const pageCount = computed(
     () => sources.current?.chapters[chapter.value]?.pages?.length ?? 1

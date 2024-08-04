@@ -3,6 +3,7 @@ import { isClient } from "@vueuse/core";
 export const useConfigDataStore = defineStore("configDataStore", () => {
   const runtimeConfig = useRuntimeConfig();
   const sourcesStore = useSourcesStore();
+  const progressStore = useProgressStore();
   const API = useApi();
 
   let configData: Ref<ConfigDataSpec> = ref({});
@@ -35,13 +36,27 @@ export const useConfigDataStore = defineStore("configDataStore", () => {
     await loadConfigData(dataString);
 
     if (configData.value.remotes) {
-      for (let remote of configData.value.remotes) {
-        let chapters = remote.chapters ?? ["?"];
-        let series = await API.getSeries(remote);
-        if (series.result?.chapters) chapters = series.result.chapters;
+      for (let [chapter, remotes] of Object.entries(configData.value.remotes)) {
+        for (let remote of remotes) {
+          let chapters = [];
+          if (chapter === "@") {
+            let series = await API.getSeries(remote);
+            chapters = series.result?.chapters!;
+          } else chapters = [chapter];
 
-        await sourcesStore.addSource(remote.website, chapters, remote);
+          await sourcesStore.addSource(remote.website, chapters, remote);
+        }
       }
+    }
+
+    if (progressStore.chapter == undefined) {
+      progressStore.chapter = sourcesStore.chapters[0];
+    }
+
+    if (progressStore.source == undefined) {
+      progressStore.source = Object.values(sourcesStore.sources).findIndex(
+        (el) => Object.keys(el.chapters).includes(progressStore.chapter)
+      );
     }
   }
 
