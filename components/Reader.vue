@@ -1,28 +1,30 @@
 <script setup lang="ts">
-import { isClient } from "@vueuse/core";
-
 const settings = useSettingsStore();
 const progress = useProgressStore();
-const sources = useSourcesStore();
+const providersStore = useProvidersStore();
+const { load: loadProvider } = useProvider();
 
 const image = ref();
 
-useAsyncData(
-  `pages-test-${progress.chapter}`,
+await useAsyncData(
+  `fetch-pages-${progress.provider}-${progress.chapter}`,
   async () => {
-    return await sources.current?.chapters[progress.chapter]
-      .fetchPages()
-      .then(() => true);
+    if (providersStore.current) {
+      let provider = await loadProvider(
+        providersStore.current,
+        progress.chapter
+      );
+      providersStore.addProvider(provider);
+    }
+    return true;
   },
-  { watch: [() => progress.source, () => progress.chapter] }
+  { watch: [() => progress.provider, () => progress.chapter] }
 );
 
-const pages = computed(
-  () => sources.current?.chapters[progress.chapter]?.pages
-);
+const pages = computed(() => providersStore.currentSource?.pages);
 
 watchEffect(() => {
-  pages.value?.map(sources.preloadURL);
+  pages.value?.map(providersStore.preloadURL);
 });
 
 const currentSrc = computed(() => pages.value?.at(progress.page - 1));
@@ -58,7 +60,7 @@ function onClick(e: MouseEvent) {
   }
 }
 
-const onImageLoad = () => sources.setLoaded(currentSrc.value!);
+const onImageLoad = () => providersStore.setLoaded(currentSrc.value!);
 
 onMounted(() => {
   onImageLoad();
@@ -74,7 +76,8 @@ onMounted(() => {
         progress.prev();
         break;
       case "j":
-        progress.setSource(progress.source + 1);
+        // TODO: toggle source
+        break;
     }
   });
 });
@@ -88,13 +91,15 @@ onMounted(() => {
     <PageSelector v-model="progress.page" :current-src="currentSrc" />
     <div class="h-full w-full overflow-y-auto">
       <img
-        v-show="currentSrc && sources.loadedUrls.has(currentSrc)"
+        v-show="currentSrc && providersStore.loadedUrls.has(currentSrc)"
         ref="image"
         @load="onImageLoad"
         :src="currentSrc"
         :class="['m-auto', pageFitImageClass]"
       />
-      <div v-show="currentSrc && !sources.loadedUrls.has(currentSrc)"></div>
+      <div
+        v-show="currentSrc && !providersStore.loadedUrls.has(currentSrc)"
+      ></div>
     </div>
   </div>
 </template>

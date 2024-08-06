@@ -1,12 +1,10 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
-const sources = useSourcesStore();
+const providers = useProvidersStore();
 const progress = useProgressStore();
 const currentPage = defineModel<number>();
 
-const pages = computed(
-  () => sources.current?.chapters[progress.chapter]?.pages
-);
+const pages = computed(() => providers.currentSource?.pages);
 
 const pageCount = computed(() => {
   return pages.value?.length ?? 0;
@@ -17,7 +15,7 @@ const loadedIds = computed(() => {
   if (pages.value) {
     let len = pages.value.length;
     loadedIds = pages.value.reduce(
-      (acc, el, i) => (sources.loadedUrls.has(el) ? [...acc, len - i] : acc),
+      (acc, el, i) => (providers.loadedUrls.has(el) ? [...acc, len - i] : acc),
       [] as number[]
     );
   }

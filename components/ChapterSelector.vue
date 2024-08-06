@@ -1,31 +1,28 @@
 <script setup lang="ts">
 const progress = useProgressStore();
-const sources = useSourcesStore();
-
-const chapterList = computed(() => {
-  return sources.current ? Object.keys(sources.current.chapters) : [];
-});
+const providers = useProvidersStore();
 
 const chapterListIndex = computed(() =>
-  chapterList.value.indexOf(progress.chapter)
+  providers.chapterList.indexOf(progress.chapter)
 );
 
 const hasPrev = computed(() => {
-  if (sources.current) return chapterListIndex.value > 0;
+  if (providers.current) return chapterListIndex.value > 0;
   else return false;
 });
 
 const hasNext = computed(() => {
-  if (sources.current) return chapterListIndex.value < chapterList.value.length;
+  if (providers.current)
+    return chapterListIndex.value < providers.chapterList.length;
   else return false;
 });
 
 function onNext() {
-  progress.chapter = chapterList.value[chapterListIndex.value + 1];
+  progress.chapter = providers.chapterList[chapterListIndex.value + 1];
 }
 
 function onPrev() {
-  progress.chapter = chapterList.value[chapterListIndex.value - 1];
+  progress.chapter = providers.chapterList[chapterListIndex.value - 1];
 }
 </script>
 

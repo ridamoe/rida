@@ -1,22 +1,42 @@
 declare global {
-  interface LocalSpec {
+  interface Provider {
+    spec: ProviderSpec;
+    chapters: Record<string, Source[] | undefined>;
+  }
+
+  interface Source {
     name: string;
+    chapter: string;
+    pages: string[];
+  }
+
+  interface SourceSpec {
+    name: string;
+    chapter: string;
     base?: string;
     pages: string[];
   }
 
-  interface RemoteSpec {
-    website: string;
-    params: string[] | Record<string, string>;
+  interface LocalProviderSpec {
+    type: "local";
+    key: string;
+    metadata?: {
+      title: string;
+    };
+    sources: SourceSpec[];
   }
 
+  interface RemoteProviderSpec {
+    type: "remote";
+    key: string;
+    chapter: "_auto" | string | string[];
+    params: Record<string, string>;
+  }
+
+  type ProviderSpec = RemoteProviderSpec | LocalProviderSpec;
+
   interface ConfigDataSpec {
-    remotes?: {
-      [chapter: string]: RemoteSpec[];
-    };
-    locals?: {
-      [chapter: string]: LocalSpec[];
-    };
+    providers: ProviderSpec[];
   }
 
   interface APIResponse {
@@ -32,7 +52,7 @@ declare global {
   }
 
   interface APIChapterPagesResponse {
-    result: LocalSpec | null;
+    result: SourceSpec[];
   }
 }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const settings = useSettingsStore();
-const sources = useSourcesStore();
+const providers = useProvidersStore();
 const progress = useProgressStore();
 </script>
 
@@ -125,18 +125,18 @@ const progress = useProgressStore();
       <IconButton icon="i-[solar--settings-bold]" class="mx-2" />
     </div>
     <div class="mb-6 flex w-full flex-col">
-      <h2 class="w-full p-2 text-center">Sources</h2>
+      <h2 class="w-full p-2 text-center">Providers</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
       <template
-        v-for="(source, index) in Object.values(sources.sources)"
-        :key="source.name"
+        v-for="(provider, index) in providers.providers"
+        :key="provider.spec.key"
       >
         <SourceSelect
-          @click="() => progress.setSource(index)"
-          :selected="index == progress.source"
-          :disabled="!Object.keys(source.chapters).includes(progress.chapter)"
-          >{{ source.name }}</SourceSelect
-        >
+          @click="() => progress.setProvider(provider.spec.key)"
+          :selected="provider.spec.key == progress.provider"
+          :disabled="!Object.keys(provider.chapters).includes(progress.chapter)"
+          >{{ provider.spec.key }}
+        </SourceSelect>
       </template>
     </div>
   </aside>

@@ -1,34 +1,18 @@
 export const useProgressStore = defineStore("progressStore", () => {
-  const sources = useSourcesStore();
+  const providersStore = useProvidersStore();
 
   const title = ref();
   const chapter = ref();
   const page = ref(1);
-  const source = ref();
+  const provider = ref();
+  const source = ref(0);
 
   const pageCount = computed(
-    () => sources.current?.chapters[chapter.value]?.pages?.length ?? 1
+    () => providersStore.currentSource?.pages.length ?? 1
   );
 
-  // const pages = useAsyncData("current-pages", async () => {
-  //   return await
-  // });
-
-  function setSource(locator: number | string) {
-    let index: number = -1;
-
-    if (typeof locator == "string") {
-      let parsed = parseInt(locator);
-      if (!isNaN(parsed)) index = parsed;
-      else {
-        index = Object.keys(sources.sources).findIndex((v) => v == locator);
-      }
-    } else if (typeof locator == "number") index = locator;
-
-    if (index == -1) index = 0;
-    index %= Object.values(sources.sources).length;
-    console.log("setSource", locator, index);
-    source.value = index;
+  function setProvider(key: string) {
+    provider.value = key;
   }
 
   function setTitle(value: any) {
@@ -66,26 +50,25 @@ export const useProgressStore = defineStore("progressStore", () => {
   };
 
   const next = () => {
-    let chapterKeys = Object.keys(sources.current?.chapters!);
-    let index = chapterKeys.findIndex((v) => v == chapter.value);
+    let index = providersStore.chapterList.findIndex((v) => v == chapter.value);
     if (page.value + 1 > pageCount.value) {
-      if (index + 1 < chapterKeys.length) {
-        chapter.value = chapterKeys[index + 1];
+      if (index + 1 < providersStore.chapterList.length) {
+        chapter.value = providersStore.chapterList[index + 1];
       }
     } else page.value++;
   };
 
   const prev = () => {
-    let chapterKeys = Object.keys(sources.current?.chapters!);
-    let index = chapterKeys.findIndex((v) => v == chapter.value);
+    let index = providersStore.chapterList.findIndex((v) => v == chapter.value);
     if (page.value - 1 < 1) {
       if (index - 1 > 0) {
-        chapter.value = chapterKeys[index - 1];
+        chapter.value = providersStore.chapterList[index - 1];
       }
     } else page.value--;
   };
 
   return {
+    provider,
     source,
     title,
     chapter,
@@ -94,7 +77,7 @@ export const useProgressStore = defineStore("progressStore", () => {
     next,
     prev,
 
-    setSource,
+    setProvider,
     setTitle,
     setChapter,
     setPage,
