@@ -1,4 +1,5 @@
 import { isClient } from "@vueuse/core";
+import mergeChapterLists from "~/utils/sort";
 
 export const useProvidersStore = defineStore(
   "providersStore",
@@ -13,12 +14,12 @@ export const useProvidersStore = defineStore(
     }
 
     const chapterList = computed(() => {
-      let all = [];
+      let lists = [];
       for (let provider of Object.values(providers.value)) {
-        all.push(...Object.keys(provider.chapters));
+        lists.push(Object.keys(provider.chapters));
       }
-      all = Array.from(new Set(all.sort())); // Remove duplicates, keep order
-      return all;
+      // Order and remove duplicates
+      return mergeChapterLists(lists);
     });
 
     const current: Ref<Provider | undefined> = computed(() => {
