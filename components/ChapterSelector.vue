@@ -35,7 +35,15 @@ function onPrev() {
       :disabled="!hasPrev"
       @click="onPrev"
     />
-    <p>Chapter {{ progress.chapter }}</p>
+    <select class="bg-neutral-900 outline-none" v-model="progress.chapter">
+      <option
+        v-for="chapter in providers.chapterList"
+        :value="chapter"
+        :selected="chapter == progress.chapter"
+      >
+        Chapter {{ chapter }}
+      </option>
+    </select>
     <IconButton
       icon="i-[iconamoon--arrow-right-2]"
       :disabled="!hasNext"
