@@ -37,10 +37,6 @@ export const useProgressStore = defineStore("progressStore", () => {
     return page;
   }
 
-  watch([chapter], () => {
-    page.value = 1;
-  });
-
   watch([page, pageCount], () => {
     page.value = clampPage(page.value);
   });
@@ -54,6 +50,7 @@ export const useProgressStore = defineStore("progressStore", () => {
     if (page.value + 1 > pageCount.value) {
       if (index + 1 < providersStore.chapterList.length) {
         chapter.value = providersStore.chapterList[index + 1];
+        page.value = 1;
       }
     } else page.value++;
   };
@@ -63,6 +60,7 @@ export const useProgressStore = defineStore("progressStore", () => {
     if (page.value - 1 < 1) {
       if (index - 1 > 0) {
         chapter.value = providersStore.chapterList[index - 1];
+        page.value = pageCount.value;
       }
     } else page.value--;
   };
