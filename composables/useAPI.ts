@@ -18,8 +18,20 @@ export const useAPI = () => {
     });
   }
 
+  async function getInfo(): Promise<APIInfo> {
+    return $api(`/info`);
+  }
+
+  async function getMatch(url: string): Promise<APIMatchResponse> {
+    return $api(`/match`, {
+      query: { url },
+    });
+  }
+
   return {
     getSeries,
     getImages,
+    getMatch,
+    getInfo,
   };
 };

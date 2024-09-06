@@ -68,6 +68,24 @@ declare global {
   interface APIImagesResponse {
     result: APISource[];
   }
+
+  interface APIMatchResponse {
+    result?: {
+      key: string;
+      params: Record<string, string>;
+    };
+  }
+
+  interface APIInfo {
+    result: {
+      [key: string]: {
+        chapters: {
+          supported: boolean;
+          auto: boolean;
+        };
+      };
+    };
+  }
 }
 
 export {};
