@@ -7,6 +7,9 @@ export default {
       screens: {
         md: "700px",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+      },
     },
   },
   plugins: [iconsPlugin(), dynamicIconsPlugin()],
