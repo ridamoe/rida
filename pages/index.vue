@@ -27,18 +27,19 @@ async function send(e: KeyboardEvent) {
           {
             type: "remote",
             key: match.result.key,
-            chapter: "_auto",
             params: match.result.params,
           },
         ],
       };
       let data = btoa(JSON.stringify(configData));
-      let query: { page: number; chapter?: string; d: string } = {
+      let query: { page: number; d: string } = {
         page: 1,
         d: `json:${data}`,
       };
-      if (selected_chapter) query["chapter"] = selected_chapter;
-      navigateTo({ path: "/read", query });
+
+      let path = "/read";
+      if (selected_chapter) path += "/" + selected_chapter;
+      navigateTo({ path, query });
     } else {
       errorMessage.value = "Chapters need to be specified(?)";
     }
