@@ -43,14 +43,23 @@ if (!result.value?.error) {
   }
 }
 
-let chapter;
-if (Array.isArray(route.params.slug)) {
-  let chapterStr = route.params.slug.at(-1) || "1";
-  chapter = providerStore.chapters.find((c) => c.chapter == chapterStr);
-}
-if (!chapter && providerStore.chapters) chapter = providerStore.chapters[0];
+function findChapter(c: Chapter, data: string) {
+  if (c.chapter == data) return true;
 
-if (chapter) {
+  if (c.params && Object.values(c.params).includes(data)) return true;
+  return false;
+}
+
+let chapterSlugData = route.params.slug.at(-1);
+let chapter = providerStore.chapters.find((c) =>
+  findChapter(c, chapterSlugData)
+);
+
+// TODO: Find lowest valued chapter instead of hardcoding "1"
+if (chapter == null)
+  chapter = providerStore.chapters.find((c) => findChapter(c, "1"));
+
+if (chapter != null) {
   progress.setChapter(chapter);
   progress.setProvider(chapter.provider_key);
 }
