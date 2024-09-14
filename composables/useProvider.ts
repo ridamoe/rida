@@ -1,56 +1,68 @@
-export function useProvider() {
+export function useProvider(
+  spec: ProviderSpec,
+  defaultSeries: Series | undefined = undefined
+) {
   const API = useAPI();
 
-  async function init(spec: ProviderSpec): Promise<Provider> {
-    let chapters: Record<string, Source[] | undefined> = {};
-    let chapterList: string[] = [];
-    if (spec.type === "local")
-      chapterList = spec.sources.map((el) => el.chapter);
+  let series = ref<Series | undefined>(defaultSeries);
+
+  function flattenSources(
+    sources: APISource[] | undefined
+  ): Source[] | undefined {
+    return sources?.map((el) => ({
+      name: el.name,
+      images: el.images.map((im) => (el.base ?? "") + im),
+    }));
+  }
+
+  async function init() {
+    if (defaultSeries) series.value = defaultSeries;
     else {
-      if (spec.chapter === "_auto") {
-        let apiSeries = await API.getSeries(spec);
-        let apiChapterList = apiSeries?.result?.chapters;
-        if (apiChapterList) chapterList = apiChapterList;
+      let apiSeries: APISeries = {};
+
+      if (spec.type === "remote") {
+        let data = await API.getSeries(spec);
+        if (data.result) apiSeries = data.result;
+
+        if (spec.chapters) {
+          apiSeries.chapters = Array.isArray(spec.chapters)
+            ? spec.chapters
+            : [spec.chapters];
+        }
+      } else apiSeries = spec.series;
+
+      if (!apiSeries.chapters) apiSeries.chapters = [];
+
+      series.value = {
+        ...apiSeries,
+        chapters: apiSeries.chapters.map((el) => ({
+          ...el,
+          provider_key: spec.key,
+          sources: flattenSources(el.sources),
+        })),
+      };
+    }
+  }
+
+  const load = async (chapter: Chapter): Promise<Chapter> => {
+    if (chapter.provider_key != spec.key) throw new Error("Wrong provider");
+
+    let index = series.value?.chapters.indexOf(chapter);
+    if (index == null) throw new Error("Missing chapter");
+
+    if (!chapter.sources) {
+      if (spec.type == "remote") {
+        let images = await API.getImages(spec, chapter.params!);
+        if (images && images.result)
+          chapter.sources = flattenSources(images.result);
       } else {
-        chapterList = Array.isArray(spec.chapter)
-          ? spec.chapter
-          : [spec.chapter];
+        throw new Error("No sources for chapter");
       }
     }
-    for (let chapter of chapterList) {
-      chapters[chapter] = undefined;
-    }
 
-    return { spec, chapters };
-  }
-
-  async function load(provider: Provider, chapter: string) {
-    if (!Object.keys(provider.chapters).includes(chapter))
-      throw new Error("Invalid Chapter");
-
-    let sourceSpecs: SourceSpec[] | undefined;
-    if (provider.spec.type == "remote") {
-      let apiPages = await API.getChapterPages(provider.spec, chapter);
-      if (apiPages && apiPages.result) sourceSpecs = apiPages.result;
-    } else sourceSpecs = provider.spec.sources;
-
-    provider.chapters[chapter] = [];
-    if (!sourceSpecs) throw new Error("No sources for chapter");
-
-    for (let sourceSpec of sourceSpecs) {
-      let source: Source = {
-        name: sourceSpec.name,
-        chapter: chapter,
-        pages: sourceSpec.pages.map((page) => (sourceSpec.base ?? "") + page),
-      };
-
-      provider.chapters[chapter].push(source);
-    }
-    return provider;
-  }
-
-  return {
-    init,
-    load,
+    series.value!.chapters[index] = chapter;
+    return chapter;
   };
+
+  return { key: toValue(spec).key, series, load, init };
 }

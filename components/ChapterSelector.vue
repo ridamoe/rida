@@ -2,27 +2,43 @@
 const progress = useProgressStore();
 const providers = useProvidersStore();
 
-const chapterListIndex = computed(() =>
-  providers.chapterList.indexOf(progress.chapter)
+const chapterValue = ref(progress.chapter?.chapter);
+
+watch(chapterValue, () => {
+  let chapter = providers.chapters.find((c) => c.chapter == chapterValue.value);
+  progress.chapter = chapter;
+});
+
+watch([() => progress.chapter], () => {
+  chapterValue.value = progress.chapter?.chapter;
+});
+
+const index = computed(() =>
+  progress.chapter ? providers.chapters.indexOf(progress.chapter) : null
 );
 
 const hasPrev = computed(() => {
-  if (providers.current) return chapterListIndex.value > 0;
-  else return false;
+  if (index.value != null) {
+    return index.value > 0;
+  }
+  return false;
 });
 
 const hasNext = computed(() => {
-  if (providers.current)
-    return chapterListIndex.value < providers.chapterList.length;
-  else return false;
+  if (index.value != null) {
+    return index.value < providers.chapters.length - 1;
+  }
+  return false;
 });
 
 function onNext() {
-  progress.chapter = providers.chapterList[chapterListIndex.value + 1];
+  if (index.value != null && hasNext.value)
+    progress.chapter = providers.chapters[index.value + 1];
 }
 
 function onPrev() {
-  progress.chapter = providers.chapterList[chapterListIndex.value - 1];
+  if (index.value != null && hasPrev.value)
+    progress.chapter = providers.chapters[index.value - 1];
 }
 </script>
 
@@ -35,13 +51,13 @@ function onPrev() {
       :disabled="!hasPrev"
       @click="onPrev"
     />
-    <select class="bg-neutral-900 outline-none" v-model="progress.chapter">
+    <select class="bg-neutral-900 outline-none" v-model="chapterValue">
       <option
-        v-for="chapter in providers.chapterList"
-        :value="chapter"
-        :selected="chapter == progress.chapter"
+        v-for="chapter in providers.chapters"
+        :value="chapter.chapter"
+        :selected="chapter.chapter == progress.chapter?.chapter"
       >
-        Chapter {{ chapter }}
+        Chapter {{ chapter.chapter }}
       </option>
     </select>
     <IconButton

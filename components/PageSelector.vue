@@ -4,17 +4,17 @@ const providers = useProvidersStore();
 const progress = useProgressStore();
 const currentPage = defineModel<number>();
 
-const pages = computed(() => providers.currentSource?.pages);
+const images = computed(() => progress.source?.images);
 
 const pageCount = computed(() => {
-  return pages.value?.length ?? 0;
+  return images.value?.length ?? 0;
 });
 
 const loadedIds = computed(() => {
   let loadedIds = [] as number[];
-  if (pages.value) {
-    let len = pages.value.length;
-    loadedIds = pages.value.reduce(
+  if (images.value) {
+    let len = images.value.length;
+    loadedIds = images.value.reduce(
       (acc, el, i) => (providers.loadedUrls.has(el) ? [...acc, len - i] : acc),
       [] as number[]
     );

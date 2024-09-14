@@ -1,37 +1,46 @@
 import { isClient } from "@vueuse/core";
-import mergeChapterLists from "~/utils/sort";
 
 export const useProvidersStore = defineStore(
   "providersStore",
   () => {
-    const progress = useProgressStore();
-
     let loadedUrls: Ref<Set<string>> = ref(new Set([]));
-    let providers = ref<Record<string, Provider>>({});
+    let providersData = ref<
+      { spec: ProviderSpec; series: Series | undefined }[]
+    >([]);
 
-    async function addProvider(provider: Provider) {
-      providers.value[provider.spec.key] = provider;
+    let providers = computed(() => {
+      let list = [];
+      for (const [i, { spec, series }] of providersData.value.entries()) {
+        let provider = useProvider(spec, series);
+        providersData.value[i].series = provider.series.value;
+        list.push(provider);
+      }
+      return list;
+    });
+
+    async function addProvider(spec: ProviderSpec) {
+      if (!providersData.value.find((d) => d.spec.key == spec.key)) {
+        let provider = useProvider(spec);
+        await provider.init();
+        providersData.value?.push({ spec, series: provider.series.value });
+      }
     }
 
-    const chapterList = computed(() => {
-      let lists = [];
-      for (let provider of Object.values(providers.value)) {
-        lists.push(Object.keys(provider.chapters));
-      }
-      // Order and remove duplicates
-      return mergeChapterLists(lists);
+    const chapters = computed(() => {
+      let list: Chapter[] = providers.value.reduce((a: Chapter[], p) => {
+        if (p.series.value) a.push(...p.series.value.chapters);
+        return a;
+      }, []);
+      return list;
     });
 
-    const current: Ref<Provider | undefined> = computed(() => {
-      return Object.values(providers.value).find(
-        (el) => el.spec.key == progress.provider
-      );
-    });
-
-    const currentSource: Ref<Source | undefined> = computed(() => {
-      let sources = current.value?.chapters[progress.chapter];
-      return sources?.[progress.source];
-    });
+    async function load(chapter: Chapter): Promise<Chapter> {
+      let provider = providers.value.find(
+        (p) => p.key == chapter.provider_key
+      )!;
+      let loaded = await provider.load(chapter);
+      return loaded;
+    }
 
     function preloadURL(url: string) {
       return new Promise<void>((resolve) => {
@@ -54,12 +63,9 @@ export const useProvidersStore = defineStore(
     return {
       loadedUrls,
       providers,
+      chapters,
 
-      chapterList,
-
-      current,
-      currentSource,
-
+      load,
       preloadURL,
       addProvider,
       setLoaded: (url: string) => {

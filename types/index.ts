@@ -1,36 +1,39 @@
 declare global {
-  interface Provider {
-    spec: ProviderSpec;
-    chapters: Record<string, Source[] | undefined>;
-  }
-
   interface Source {
     name: string;
-    chapter: string;
-    pages: string[];
+    images: string[];
   }
 
-  interface SourceSpec {
-    name: string;
+  interface Chapter extends APIChapter {
+    provider_key: string;
+    sources?: Source[];
+  }
+
+  interface APIChapter {
     chapter: string;
+    params?: Record<string, string>;
+    title?: string;
+    sources?: APISource[];
+    volume?: string | number;
+  }
+
+  interface APISource {
+    name: string;
     base?: string;
-    pages: string[];
+    images: string[];
   }
 
   interface LocalProviderSpec {
     type: "local";
     key: string;
-    metadata?: {
-      title: string;
-    };
-    sources: SourceSpec[];
+    series: APISeries;
   }
 
   interface RemoteProviderSpec {
     type: "remote";
     key: string;
-    chapter: "_auto" | string | string[];
     params: Record<string, string>;
+    chapters?: APIChapter | APIChapter[];
   }
 
   type ProviderSpec = RemoteProviderSpec | LocalProviderSpec;
@@ -44,15 +47,24 @@ declare global {
     result: null | any;
   }
 
-  interface APISeriesResponse {
-    result: {
-      title?: string;
-      chapters?: string[];
-    } | null;
+  interface Series {
+    title?: string;
+    cover?: string;
+    chapters: Chapter[];
   }
 
-  interface APIChapterPagesResponse {
-    result: SourceSpec[];
+  interface APISeries {
+    title?: string;
+    cover?: string;
+    chapters?: APIChapter[];
+  }
+
+  interface APISeriesResponse {
+    result: APISeries | null;
+  }
+
+  interface APIImagesResponse {
+    result: APISource[];
   }
 }
 

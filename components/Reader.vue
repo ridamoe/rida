@@ -2,32 +2,25 @@
 const settings = useSettingsStore();
 const progress = useProgressStore();
 const providersStore = useProvidersStore();
-const { load: loadProvider } = useProvider();
-
 const image = ref();
 
-await useAsyncData(
-  `fetch-pages-${progress.provider}-${progress.chapter}`,
-  async () => {
-    if (providersStore.current) {
-      let provider = await loadProvider(
-        providersStore.current,
-        progress.chapter
-      );
-      providersStore.addProvider(provider);
-    }
-    return true;
-  },
-  { watch: [() => progress.provider, () => progress.chapter] }
-);
+const load = async () => {
+  if (progress.chapter && !progress.chapter.sources) {
+    progress.setChapter(await providersStore.load(progress.chapter));
+  }
+  return true;
+};
 
-const pages = computed(() => providersStore.currentSource?.pages);
+await useAsyncData(`preload-chapter`, load);
+watchEffect(load);
+
+const images = computed(() => progress.source?.images);
 
 watchEffect(() => {
-  pages.value?.map(providersStore.preloadURL);
+  images.value?.map(providersStore.preloadURL);
 });
 
-const currentSrc = computed(() => pages.value?.at(progress.page - 1));
+const currentSrc = computed(() => images.value?.at(progress.page - 1));
 
 const pageFitImageClass = computed(() => {
   switch (settings.pageFit) {

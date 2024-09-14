@@ -2,17 +2,35 @@ export const useProgressStore = defineStore("progressStore", () => {
   const providersStore = useProvidersStore();
 
   const title = ref();
-  const chapter = ref();
+  const chapter = ref<Chapter>();
   const page = ref(1);
-  const provider = ref();
-  const source = ref(0);
+  const providerKey = ref();
+  const sourceId = ref(0);
+
+  const source: Ref<Source | undefined> = computed(
+    () => chapter.value?.sources?.[sourceId.value]
+  );
+
+  const provider = computed(() =>
+    providersStore.providers.find((p) => p.key == providerKey.value)
+  );
 
   const pageCount = computed(
-    () => providersStore.currentSource?.pages.length ?? 1
+    () => chapter.value?.sources?.[sourceId.value].images.length ?? 1
   );
 
   function setProvider(key: string) {
-    provider.value = key;
+    providerKey.value = key;
+    let chapters = provider.value?.series.value?.chapters;
+    if (chapters) {
+      let sameValue = chapters.find((c) => c.chapter == chapter.value?.chapter);
+      if (sameValue) chapter.value = sameValue;
+      else chapter.value = chapters[0];
+    }
+  }
+
+  function setSource(id: number) {
+    sourceId.value = id;
   }
 
   function setTitle(value: any) {
@@ -20,8 +38,8 @@ export const useProgressStore = defineStore("progressStore", () => {
       title.value = value.replace(/_/g, " ");
   }
 
-  function setChapter(value: any) {
-    chapter.value = value ? value : "1";
+  function setChapter(value: Chapter) {
+    chapter.value = value;
   }
 
   function setPage(value: any) {
@@ -42,24 +60,24 @@ export const useProgressStore = defineStore("progressStore", () => {
   });
 
   const status = () => {
-    return `${title.value} - Chapter ${chapter.value}`;
+    return `${title.value} - Chapter ${chapter.value?.chapter}`;
   };
 
   const next = () => {
-    let index = providersStore.chapterList.findIndex((v) => v == chapter.value);
+    let index = providersStore.chapters.findIndex((v) => v == chapter.value);
     if (page.value + 1 > pageCount.value) {
-      if (index + 1 < providersStore.chapterList.length) {
-        chapter.value = providersStore.chapterList[index + 1];
+      if (index + 1 < providersStore.chapters.length) {
+        chapter.value = providersStore.chapters[index + 1];
         page.value = 1;
       }
     } else page.value++;
   };
 
   const prev = () => {
-    let index = providersStore.chapterList.findIndex((v) => v == chapter.value);
+    let index = providersStore.chapters.findIndex((v) => v == chapter.value);
     if (page.value - 1 < 1) {
       if (index - 1 > 0) {
-        chapter.value = providersStore.chapterList[index - 1];
+        chapter.value = providersStore.chapters[index - 1];
         page.value = pageCount.value;
       }
     } else page.value--;
@@ -76,6 +94,7 @@ export const useProgressStore = defineStore("progressStore", () => {
     prev,
 
     setProvider,
+    setSource,
     setTitle,
     setChapter,
     setPage,

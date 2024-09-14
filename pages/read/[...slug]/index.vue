@@ -6,50 +6,53 @@ const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const progress = useProgressStore();
 const providerStore = useProvidersStore();
-const provider = useProvider();
 
-await useAsyncData("config-data", async () => {
+let { data: result } = await useAsyncData("config-data", async () => {
   let [format, query] = route.query.d.split(":");
   const corsEndpoint = isClient
     ? runtimeConfig.public.corsEndpoint
     : runtimeConfig.corsEndpoint;
-  let data;
-  switch (format) {
-    case "json":
-      data = JSON.parse(atob(query));
-      break;
-    case "pastebin":
-      data = JSON.parse(
-        await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
-      );
-      break;
-    case "gist":
-      data = JSON.parse(
-        await $fetch("https://gist.githubusercontent.com/" + query)
-      );
-      break;
-    default:
-      throw new Error("Unknown format");
+  let data, error;
+  try {
+    switch (format) {
+      case "json":
+        data = JSON.parse(atob(query));
+        break;
+      case "pastebin":
+        data = JSON.parse(
+          await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
+        );
+        break;
+      case "gist":
+        data = JSON.parse(
+          await $fetch("https://gist.githubusercontent.com/" + query)
+        );
+        break;
+      default:
+        error = "Unknown format";
+    }
+  } catch (e) {
+    error = "Something bad happened";
   }
-
-  for (let providerSpec of data.providers) {
-    providerStore.addProvider(await provider.init(providerSpec));
-  }
-  return true;
+  return { data, error };
 });
 
-if (progress.chapter == undefined) {
-  progress.chapter = providerStore.chapterList[0];
+if (!result.value?.error) {
+  for (let providerSpec of result.value?.data.providers) {
+    await providerStore.addProvider(providerSpec);
+  }
 }
 
-if (progress.provider == undefined) {
-  progress.provider = Object.values(providerStore.providers).find((el) =>
-    Object.keys(el.chapters).includes(progress.chapter)
-  )?.spec.key;
-}
-
+let chapter;
 if (Array.isArray(route.params.slug)) {
-  progress.setChapter(route.params.slug.at(-1));
+  let chapterStr = route.params.slug.at(-1) || "1";
+  chapter = providerStore.chapters.find((c) => c.chapter == chapterStr);
+}
+if (!chapter && providerStore.chapters) chapter = providerStore.chapters[0];
+
+if (chapter) {
+  progress.setChapter(chapter);
+  progress.setProvider(chapter.provider_key);
 }
 
 if (typeof route.query.page == "string") {
@@ -57,18 +60,13 @@ if (typeof route.query.page == "string") {
 }
 
 await useAsyncData("set-title", async () => {
-  const API = useAPI();
-  if (providerStore.current && progress.title == undefined) {
-    let spec = providerStore.current?.spec;
-    if (spec.type === "local") {
-      if (spec.metadata) progress.setTitle(spec.metadata.title);
-      else progress.setTitle("Unknown");
-    } else {
-      let series = await API.getSeries(spec);
-      if (series.result?.title) progress.setTitle(series.result.title);
-      updateUrl();
-    }
-  }
+  let titles = providerStore.providers
+    .map((p) => p.series.value?.title)
+    .filter((n) => n);
+
+  let title = titles.length > 0 ? titles[0] : "Unknown";
+  progress.setTitle(title);
+  updateUrl();
   return true;
 });
 
@@ -83,7 +81,7 @@ function updateUrl() {
   let routeParams = {
     name: "read-slug",
     params: {
-      slug: [urlTitle, progress.chapter].filter((v) => v).join("/"),
+      slug: [urlTitle, progress.chapter?.chapter].filter((v) => v).join("/"),
     },
     query: { ...route.query, page: progress.page },
   };

@@ -9,17 +9,17 @@ export const useAPI = () => {
     });
   }
 
-  async function getChapterPages(
+  async function getImages(
     remote: RemoteProviderSpec,
-    chapter: string | null
-  ): Promise<APIChapterPagesResponse> {
-    return $api(`/website/${remote.key}/chapter/pages`, {
-      query: { ...remote.params, chapter },
+    params: Record<string, string>
+  ): Promise<APIImagesResponse> {
+    return $api(`/website/${remote.key}/images`, {
+      query: { ...remote.params, ...params },
     });
   }
 
   return {
     getSeries,
-    getChapterPages,
+    getImages,
   };
 };
