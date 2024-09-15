@@ -55,9 +55,10 @@ let chapter = providerStore.chapters.find((c) =>
   findChapter(c, chapterSlugData)
 );
 
-// TODO: Find lowest valued chapter instead of hardcoding "1"
 if (chapter == null)
-  chapter = providerStore.chapters.find((c) => findChapter(c, "1"));
+  chapter = providerStore.chapters.reduce((p, c) =>
+    c.value < p.value ? c : p
+  );
 
 if (chapter != null) {
   progress.setChapter(chapter);

@@ -27,11 +27,10 @@ export const useProvidersStore = defineStore(
     }
 
     const chapters = computed(() => {
-      let list: Chapter[] = providers.value.reduce((a: Chapter[], p) => {
+      return providers.value.reduce((a: Chapter[], p) => {
         if (p.series.value) a.push(...p.series.value.chapters);
         return a;
       }, []);
-      return list;
     });
 
     async function load(chapter: Chapter): Promise<Chapter> {

@@ -1,3 +1,5 @@
+import calcChapterValues from "~/utils/chapterValue";
+
 export function useProvider(
   spec: ProviderSpec,
   defaultSeries: Series | undefined = undefined
@@ -33,13 +35,24 @@ export function useProvider(
 
       if (!apiSeries.chapters) apiSeries.chapters = [];
 
+      let pChapters = apiSeries.chapters.map((el) => ({
+        ...el,
+        provider_key: spec.key,
+        sources: flattenSources(el.sources),
+      }));
+
+      let chapters = calcChapterValues(pChapters);
+
+      // Keep language order consistent
+      chapters.sort((a, b) =>
+        a.language != null && b.language != null
+          ? a.language.localeCompare(b.language)
+          : 0
+      );
+
       series.value = {
         ...apiSeries,
-        chapters: apiSeries.chapters.map((el) => ({
-          ...el,
-          provider_key: spec.key,
-          sources: flattenSources(el.sources),
-        })),
+        chapters,
       };
     }
   }

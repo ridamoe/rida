@@ -6,12 +6,14 @@ declare global {
 
   interface Chapter extends APIChapter {
     provider_key: string;
+    value: number;
     sources?: Source[];
   }
 
   interface APIChapter {
     chapter: string;
     params?: Record<string, string>;
+    language?: string;
     title?: string;
     sources?: APISource[];
     volume?: string | number;

@@ -13,8 +13,20 @@ watch([() => progress.chapter], () => {
   chapterValue.value = progress.chapter?.chapter;
 });
 
+const uniqueChapterList = computed(() => {
+  let values: number[] = [];
+  let chapters = [];
+  for (let chapter of providers.chapters) {
+    if (!values.includes(chapter.value)) {
+      values.push(chapter.value);
+      chapters.push(chapter);
+    }
+  }
+  return chapters;
+});
+
 const index = computed(() =>
-  progress.chapter ? providers.chapters.indexOf(progress.chapter) : null
+  progress.chapter ? uniqueChapterList.value.indexOf(progress.chapter) : null
 );
 
 const hasPrev = computed(() => {
@@ -26,20 +38,10 @@ const hasPrev = computed(() => {
 
 const hasNext = computed(() => {
   if (index.value != null) {
-    return index.value < providers.chapters.length - 1;
+    return index.value < uniqueChapterList.value.length - 1;
   }
   return false;
 });
-
-function onNext() {
-  if (index.value != null && hasNext.value)
-    progress.chapter = providers.chapters[index.value + 1];
-}
-
-function onPrev() {
-  if (index.value != null && hasPrev.value)
-    progress.chapter = providers.chapters[index.value - 1];
-}
 </script>
 
 <template>
@@ -49,11 +51,11 @@ function onPrev() {
     <IconButton
       icon="i-[iconamoon--arrow-left-2]"
       :disabled="!hasPrev"
-      @click="onPrev"
+      @click="progress.prev(true)"
     />
     <select class="bg-neutral-900 outline-none" v-model="chapterValue">
       <option
-        v-for="chapter in providers.chapters"
+        v-for="chapter in uniqueChapterList"
         :value="chapter.chapter"
         :selected="chapter.chapter == progress.chapter?.chapter"
       >
@@ -63,7 +65,7 @@ function onPrev() {
     <IconButton
       icon="i-[iconamoon--arrow-right-2]"
       :disabled="!hasNext"
-      @click="onNext"
+      @click="progress.next(true)"
     />
   </div>
 </template>

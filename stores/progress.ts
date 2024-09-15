@@ -63,24 +63,57 @@ export const useProgressStore = defineStore("progressStore", () => {
     return `${title.value} - Chapter ${chapter.value?.chapter}`;
   };
 
-  const next = () => {
-    let index = providersStore.chapters.findIndex((v) => v == chapter.value);
-    if (page.value + 1 > pageCount.value) {
-      if (index + 1 < providersStore.chapters.length) {
-        chapter.value = providersStore.chapters[index + 1];
+  const next = (skipChapter = false) => {
+    let nextChapters = providersStore.chapters.filter((c) =>
+      chapter.value == null ? true : c.value > chapter.value.value
+    );
+
+    let nextInLang = nextChapters.find(
+      (c) => c.language == chapter.value?.language
+    );
+    let next = nextChapters.at(0);
+
+    if (
+      next?.chapter == nextInLang?.chapter ||
+      next?.value == nextInLang?.value
+    )
+      next = nextInLang;
+
+    if (skipChapter && next) {
+      chapter.value = next;
+      page.value = 1;
+    } else {
+      if (page.value + 1 > pageCount.value && next) {
+        chapter.value = next;
         page.value = 1;
-      }
-    } else page.value++;
+      } else page.value++;
+    }
   };
 
-  const prev = () => {
-    let index = providersStore.chapters.findIndex((v) => v == chapter.value);
-    if (page.value - 1 < 1) {
-      if (index - 1 > 0) {
-        chapter.value = providersStore.chapters[index - 1];
+  const prev = (skipChapter = false) => {
+    let prevChapters = providersStore.chapters.filter((c) =>
+      chapter.value == null ? true : c.value < chapter.value.value
+    );
+
+    let prevInLang = prevChapters.findLast(
+      (c) => c.language == chapter.value?.language
+    );
+    let prev = prevChapters.at(-1);
+    if (
+      prev?.chapter == prevInLang?.chapter ||
+      prev?.value == prevInLang?.value
+    )
+      prev = prevInLang;
+
+    if (skipChapter && prev) {
+      chapter.value = prev;
+      page.value = 1;
+    } else {
+      if (page.value - 1 < 1 && prev) {
+        chapter.value = prev;
         page.value = pageCount.value;
-      }
-    } else page.value--;
+      } else page.value--;
+    }
   };
 
   return {
