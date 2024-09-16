@@ -37,7 +37,11 @@ const chapterProviders = computed(() =>
     </div>
     <header class="flex min-h-12 w-full align-middle">
       <div class="h-12">
-        <IconButton icon="i-[ic--round-close]" class="p-2" />
+        <IconButton
+          icon="i-[ic--round-close]"
+          class="p-2"
+          @click="navigateTo('/')"
+        />
       </div>
       <h1 class="flex h-max p-3 text-center">
         <a class="text-balance break-words text-lg hover:underline" href="#">{{

@@ -1,5 +1,6 @@
 <script async setup lang="ts">
 import { isClient } from "@vueuse/core";
+import type { WatchStopHandle } from "vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -7,35 +8,38 @@ const runtimeConfig = useRuntimeConfig();
 const progress = useProgressStore();
 const providerStore = useProvidersStore();
 
-let { data: result } = await useAsyncData("config-data", async () => {
-  let [format, query] = route.query.d.split(":");
-  const corsEndpoint = isClient
-    ? runtimeConfig.public.corsEndpoint
-    : runtimeConfig.corsEndpoint;
-  let data, error;
-  try {
-    switch (format) {
-      case "json":
-        data = JSON.parse(atob(query));
-        break;
-      case "pastebin":
-        data = JSON.parse(
-          await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
-        );
-        break;
-      case "gist":
-        data = JSON.parse(
-          await $fetch("https://gist.githubusercontent.com/" + query)
-        );
-        break;
-      default:
-        error = "Unknown format";
+let { data: result } = await useAsyncData(
+  `config-data-${route.query.d}`,
+  async () => {
+    let [format, query] = route.query.d.split(":");
+    const corsEndpoint = isClient
+      ? runtimeConfig.public.corsEndpoint
+      : runtimeConfig.corsEndpoint;
+    let data, error;
+    try {
+      switch (format) {
+        case "json":
+          data = JSON.parse(atob(query));
+          break;
+        case "pastebin":
+          data = JSON.parse(
+            await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
+          );
+          break;
+        case "gist":
+          data = JSON.parse(
+            await $fetch("https://gist.githubusercontent.com/" + query)
+          );
+          break;
+        default:
+          error = "Unknown format";
+      }
+    } catch (e) {
+      error = "Something bad happened";
     }
-  } catch (e) {
-    error = "Something bad happened";
+    return { data, error };
   }
-  return { data, error };
-});
+);
 
 if (!result.value?.error) {
   for (let providerSpec of result.value?.data.providers) {
@@ -69,7 +73,7 @@ if (typeof route.query.page == "string") {
   progress.setPage(route.query.page);
 }
 
-await useAsyncData("set-title", async () => {
+await useAsyncData(`set-title-${route.query.d}`, async () => {
   let titles = providerStore.providers
     .map((p) => p.series.value?.title)
     .filter((n) => n);
@@ -97,24 +101,34 @@ function updateUrl() {
   };
   const newUrl = router.resolve(routeParams);
   if (newUrl.fullPath != route.fullPath)
-    if (isClient) {
-      if (typeof newUrl.fullPath == "string")
-        window.history.replaceState(null, "", newUrl.fullPath);
-    } else {
-      navigateTo(newUrl.fullPath);
-    }
+    navigateTo(newUrl.fullPath, { replace: isClient });
 }
 
-watchEffect(() => {
-  progress.title;
-  progress.chapter;
-  progress.page;
-  progress.status;
+let stopUrlUpdater: WatchStopHandle;
 
-  useHead({
-    title: progress.status,
+onMounted(() => {
+  stopUrlUpdater = watchEffect(() => {
+    progress.title;
+    progress.chapter;
+    progress.page;
+    progress.status;
+
+    useHead({
+      title: progress.status,
+    });
+    updateUrl();
   });
-  updateUrl();
+});
+
+onBeforeRouteLeave((to: any, from: any, next: any) => {
+  if (to.name != from.name) {
+    if (stopUrlUpdater) stopUrlUpdater();
+
+    // Clean stores on page leave
+    progress.$reset();
+    providerStore.$reset();
+  }
+  next();
 });
 </script>
 

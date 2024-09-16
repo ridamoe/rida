@@ -3,6 +3,10 @@ let errorMessage = ref<string>();
 
 const API = useAPI();
 
+useHead({
+  title: "Rida",
+});
+
 const { data: apiInfo } = await useAsyncData("info", () => API.getInfo());
 
 async function send(e: KeyboardEvent) {
@@ -39,7 +43,7 @@ async function send(e: KeyboardEvent) {
 
       let path = "/read";
       if (selected_chapter) path += "/" + selected_chapter;
-      navigateTo({ path, query });
+      navigateTo({ path, query }, { replace: false });
     } else {
       errorMessage.value = "Chapters need to be specified(?)";
     }

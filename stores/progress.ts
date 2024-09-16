@@ -7,6 +7,14 @@ export const useProgressStore = defineStore("progressStore", () => {
   const providerKey = ref();
   const sourceId = ref(0);
 
+  function $reset() {
+    title.value = undefined;
+    chapter.value = undefined;
+    page.value = 1;
+    providerKey.value = undefined;
+    sourceId.value = 0;
+  }
+
   const source: Ref<Source | undefined> = computed(
     () => chapter.value?.sources?.[sourceId.value]
   );
@@ -122,6 +130,8 @@ export const useProgressStore = defineStore("progressStore", () => {
     title,
     chapter,
     page,
+
+    $reset,
 
     next,
     prev,

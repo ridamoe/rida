@@ -8,6 +8,11 @@ export const useProvidersStore = defineStore(
       { spec: ProviderSpec; series: Series | undefined }[]
     >([]);
 
+    function $reset() {
+      loadedUrls.value = new Set([]);
+      providersData.value = [];
+    }
+
     let providers = computed(() => {
       let list = [];
       for (const [i, { spec, series }] of providersData.value.entries()) {
@@ -37,8 +42,8 @@ export const useProvidersStore = defineStore(
       let provider = providers.value.find(
         (p) => p.key == chapter.provider_key
       )!;
-      let loaded = await provider.load(chapter);
-      return loaded;
+      if (!provider) throw new Error("No provider for this chapter");
+      return await provider.load(chapter);
     }
 
     function preloadURL(url: string) {
@@ -64,6 +69,7 @@ export const useProvidersStore = defineStore(
       providers,
       chapters,
 
+      $reset,
       load,
       preloadURL,
       addProvider,

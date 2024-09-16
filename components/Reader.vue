@@ -59,20 +59,26 @@ onMounted(() => {
   onImageLoad();
 });
 
+function onKeydown(event: KeyboardEvent) {
+  switch (event.key) {
+    case "ArrowLeft":
+      progress.next();
+      break;
+    case "ArrowRight":
+      progress.prev();
+      break;
+    case "j":
+      // TODO: toggle source
+      break;
+  }
+}
+
 onMounted(() => {
-  document.addEventListener("keydown", function (event) {
-    switch (event.key) {
-      case "ArrowLeft":
-        progress.next();
-        break;
-      case "ArrowRight":
-        progress.prev();
-        break;
-      case "j":
-        // TODO: toggle source
-        break;
-    }
-  });
+  document.addEventListener("keydown", onKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", onKeydown);
 });
 </script>
 
