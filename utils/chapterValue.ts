@@ -11,10 +11,9 @@ function chapterValue(chapter: Chapter) {
 
       let n = Number(match[1]);
       if (k == 0) val = n;
-      else val! += n / k;
+      else val! += n / 10 ** k;
       k++;
-    }
-    break;
+    } else break;
   }
   return val;
 }
@@ -48,6 +47,5 @@ export default function calcChapterValues(
     }
   }
 
-  chapters.sort((a, b) => a.value - b.value);
   return chapters;
 }

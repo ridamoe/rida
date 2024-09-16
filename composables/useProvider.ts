@@ -50,6 +50,8 @@ export function useProvider(
           : 0
       );
 
+      chapters.sort((a, b) => a.value - b.value);
+
       series.value = {
         ...apiSeries,
         chapters,
