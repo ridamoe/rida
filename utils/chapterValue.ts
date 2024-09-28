@@ -28,7 +28,17 @@ export default function calcChapterValues(
   }) as Chapter[];
 
   // Fill holes
-  let holes = chapters.map((c, i) => (!c.value ? i : null)).filter((v) => v);
+  let holes = chapters
+    .map((c, i) => (c.value == undefined ? i : null))
+    .filter((v) => v != undefined);
+
+  // Handle one-shots
+  if (holes.length >= 1 && holes[0] == 0) {
+    if (!chapters.some((c) => c.value == 1)) chapters[0].value = 1;
+    else chapters[0].value = 0;
+    holes = holes.slice(1);
+  }
+
   let holeRanges = holes.reduce((ranges, current, index, array) => {
     let lastRange = ranges[ranges.length - 1];
     if (lastRange && current === lastRange[1] + 1) lastRange[1] = current;
@@ -38,12 +48,21 @@ export default function calcChapterValues(
 
   for (let range of holeRanges) {
     let [start, stop] = range;
-    let distance = stop - start + 1;
-    let before = chapters[start - 1].value;
-    let after = chapters[start + 1].value;
-    let k = (before - after) / distance;
-    for (let i = start; i < stop + 1; i++) {
-      chapters[i].value = before + k * i;
+
+    let before, after;
+
+    if (start - 1 >= 0) before = chapters[start - 1].value;
+    else before = 0;
+
+    if (stop + 1 < chapters.length) after = chapters[stop + 1].value;
+    else after = before + 1;
+
+    let distance = after - before + 1;
+
+    let k = (after - before) / distance;
+    for (let i = 0; i < stop - start + 1; i++) {
+      let val = before + k * (i + 1);
+      chapters[start + i].value = val;
     }
   }
 
