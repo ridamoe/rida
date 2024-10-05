@@ -46,26 +46,33 @@ const hasNext = computed(() => {
 
 <template>
   <div
-    class="flex h-12 w-full justify-between bg-neutral-900 p-2.5 text-center align-middle"
+    class="flex min-h-12 w-full items-center justify-between bg-neutral-900 p-2.5 text-center"
   >
-    <IconButton
-      icon="i-[iconamoon--arrow-left-2]"
-      :disabled="!hasPrev"
-      @click="progress.prev(true)"
-    />
-    <select class="bg-neutral-900 outline-none" v-model="chapterValue">
-      <option
-        v-for="chapter in uniqueChapterList"
-        :value="chapter.chapter"
-        :selected="chapter.chapter == progress.chapter?.chapter"
-      >
-        Chapter {{ chapter.chapter }}
-      </option>
-    </select>
-    <IconButton
-      icon="i-[iconamoon--arrow-right-2]"
-      :disabled="!hasNext"
-      @click="progress.next(true)"
-    />
+    <span class="h-8">
+      <IconButton
+        icon="i-[iconamoon--arrow-left-2]"
+        :disabled="!hasPrev"
+        @click="progress.prev(true)"
+      />
+    </span>
+    <div>
+      <select class="bg-neutral-900 outline-none" v-model="chapterValue">
+        <option
+          v-for="chapter in uniqueChapterList"
+          :value="chapter.chapter"
+          :selected="chapter.chapter == progress.chapter?.chapter"
+        >
+          Chapter {{ chapter.chapter }}
+        </option>
+      </select>
+      <p v-if="progress.chapter?.title">{{ progress.chapter.title }}</p>
+    </div>
+    <span class="h-8">
+      <IconButton
+        icon="i-[iconamoon--arrow-right-2]"
+        :disabled="!hasNext"
+        @click="progress.next(true)"
+      />
+    </span>
   </div>
 </template>
