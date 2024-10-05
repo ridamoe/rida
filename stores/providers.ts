@@ -32,10 +32,12 @@ export const useProvidersStore = defineStore(
     }
 
     const chapters = computed(() => {
-      return providers.value.reduce((a: Chapter[], p) => {
+      let chapters = providers.value.reduce((a: Chapter[], p) => {
         if (p.series.value) a.push(...p.series.value.chapters);
         return a;
       }, []);
+      chapters.sort((a, b) => a.value - b.value);
+      return chapters;
     });
 
     async function load(chapter: Chapter): Promise<Chapter> {

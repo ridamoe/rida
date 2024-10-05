@@ -2,17 +2,16 @@
 withDefaults(
   defineProps<{
     selected?: boolean;
-    disabled: boolean;
+    disabled?: boolean;
   }>(),
-  { selected: false }
+  { selected: false, disabled: false }
 );
 
 defineEmits(["click"]);
 </script>
 
 <template>
-  <p
-    class="w-full p-2.5 text-center"
+  <div
     @click="
       (e) => {
         if (!disabled) $emit('click', e);
@@ -25,5 +24,5 @@ defineEmits(["click"]);
     ]"
   >
     <slot></slot>
-  </p>
+  </div>
 </template>

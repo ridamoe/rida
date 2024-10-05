@@ -2,12 +2,6 @@
 const settings = useSettingsStore();
 const providers = useProvidersStore();
 const progress = useProgressStore();
-
-const chapterProviders = computed(() =>
-  providers.chapters
-    .filter((c) => c.chapter == progress.chapter?.chapter)
-    .map((c) => c.provider_key)
-);
 </script>
 
 <template>
@@ -35,7 +29,7 @@ const chapterProviders = computed(() =>
         :class="settings.showPanel ? 'left-[0.5rem]' : 'right-[0.5rem]'"
       />
     </div>
-    <header class="flex min-h-12 w-full align-middle">
+    <header class="flex min-h-12 w-full shrink-0 align-middle">
       <div class="h-12">
         <IconButton
           icon="i-[ic--round-close]"
@@ -50,11 +44,13 @@ const chapterProviders = computed(() =>
       </h1>
       <div class="h-12 w-12 flex-none"></div>
     </header>
-    <div class="flex h-8 w-full items-center justify-end gap-1 px-2 py-1.5">
+    <div
+      class="flex h-8 w-full shrink-0 items-center justify-end gap-1 px-2 py-1.5"
+    >
       <IconButton icon="i-[mdi--share-variant-outline]" />
     </div>
-    <ChapterSelector />
-    <div class="flex h-8 w-full justify-end gap-1 py-1.5 align-middle">
+    <ChapterSelector class="shrink-0" />
+    <div class="flex h-8 w-full shrink-0 justify-end gap-1 py-1.5 align-middle">
       <div class="mx-3 flex h-full gap-6">
         <IconCycleButton
           :states="[
@@ -134,18 +130,16 @@ const chapterProviders = computed(() =>
       <div class="h-full w-[1.5px] rounded-xl bg-rose-600"></div>
       <IconButton icon="i-[solar--settings-bold]" class="mx-2" />
     </div>
-    <div class="mb-6 flex w-full flex-col">
-      <h2 class="w-full p-2 text-center">Providers</h2>
+    <div class="flex grow-0 flex-col">
+      <h2 class="w-full p-2 text-center">Sources</h2>
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
-      <template v-for="provider in providers.providers" :key="provider.key">
-        <SourceSelect
-          @click="() => progress.setProvider(provider.key)"
-          :selected="provider.key == progress.provider?.key"
-          :disabled="!chapterProviders.includes(provider.key)"
-          >{{ provider.key }}
-        </SourceSelect>
-      </template>
     </div>
+    <ProviderSelector
+      class="w-full grow select-none overflow-y-auto"
+      v-for="provider in providers.providers"
+      :provider="provider"
+      :key="provider.key"
+    />
   </aside>
 </template>
 

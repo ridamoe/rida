@@ -1,4 +1,6 @@
 declare global {
+  type Provider = ReturnType<typeof useProvider>;
+
   interface Source {
     name: string;
     images: string[];
