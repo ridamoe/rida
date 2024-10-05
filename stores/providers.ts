@@ -1,15 +1,12 @@
-import { isClient } from "@vueuse/core";
-
 export const useProvidersStore = defineStore(
   "providersStore",
   () => {
-    let loadedUrls: Ref<Set<string>> = ref(new Set([]));
+    let loadedImages: Ref<Record<string, string>> = ref({});
     let providersData = ref<
       { spec: ProviderSpec; series: Series | undefined }[]
     >([]);
 
     function $reset() {
-      loadedUrls.value = new Set([]);
       providersData.value = [];
     }
 
@@ -48,36 +45,20 @@ export const useProvidersStore = defineStore(
       return await provider.load(chapter);
     }
 
-    function preloadURL(url: string) {
-      return new Promise<void>((resolve) => {
-        if (isClient) {
-          if (!loadedUrls.value.has(url)) {
-            const img = new Image();
-            img.src = url;
-            img.onload = () => {
-              loadedUrls.value.add(url);
-              resolve();
-            };
-            img.onerror = () => resolve();
-          } else {
-            resolve();
-          }
-        }
-      });
+    async function loadImage(url: string) {
+      let blob: Blob = await $fetch(url, { responseType: "blob" });
+      loadedImages.value[url] = URL.createObjectURL(blob);
     }
 
     return {
-      loadedUrls,
+      loadedImages,
       providers,
       chapters,
 
       $reset,
       load,
-      preloadURL,
+      loadImage,
       addProvider,
-      setLoaded: (url: string) => {
-        loadedUrls.value.add(url);
-      },
     };
   },
   { persist: false }

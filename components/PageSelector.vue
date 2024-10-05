@@ -9,18 +9,6 @@ const images = computed(() => progress.source?.images);
 const pageCount = computed(() => {
   return images.value?.length ?? 0;
 });
-
-const loadedIds = computed(() => {
-  let loadedIds = [] as number[];
-  if (images.value) {
-    let len = images.value.length;
-    loadedIds = images.value.reduce(
-      (acc, el, i) => (providers.loadedUrls.has(el) ? [...acc, len - i] : acc),
-      [] as number[]
-    );
-  }
-  return loadedIds;
-});
 </script>
 
 <template>
@@ -50,7 +38,9 @@ const loadedIds = computed(() => {
           class="h-[0.3rem] w-full bg-neutral-600"
           :class="[
             {
-              [tw`border-t-[0.1rem] border-rose-600`]: loadedIds.includes(n),
+              [tw`border-t-[0.1rem] border-rose-600`]: Object.keys(
+                providers.loadedImages
+              ).includes(images?.at(images.length - n)!),
             },
           ]"
         ></div>

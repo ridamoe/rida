@@ -17,7 +17,7 @@ watchEffect(load);
 const images = computed(() => progress.source?.images);
 
 watchEffect(() => {
-  images.value?.map(providersStore.preloadURL);
+  images.value?.map(providersStore.loadImage);
 });
 
 const currentSrc = computed(() => images.value?.at(progress.page - 1));
@@ -53,10 +53,10 @@ function onClick(e: MouseEvent) {
   }
 }
 
-const onImageLoad = () => providersStore.setLoaded(currentSrc.value!);
+// const onImageLoad = () => providersStore.setLoaded(currentSrc.value!);
 
-onMounted(() => {
-  onImageLoad();
+onMounted(async () => {
+  await providersStore.loadImage(currentSrc.value!);
 });
 
 function onKeydown(event: KeyboardEvent) {
@@ -87,18 +87,20 @@ onBeforeUnmount(() => {
     @click="onClick"
     class="max-w-screen align-start relative flex h-screen grow select-none bg-black"
   >
-    <PageSelector v-model="progress.page" :current-src="currentSrc" />
+    <PageSelector v-model="progress.page" />
     <div class="h-full w-full overflow-y-auto">
       <img
-        v-show="currentSrc && providersStore.loadedUrls.has(currentSrc)"
+        v-if="
+          currentSrc &&
+          Object.keys(providersStore.loadedImages).includes(currentSrc)
+        "
         ref="image"
-        @load="onImageLoad"
-        :src="currentSrc"
+        :src="providersStore.loadedImages[currentSrc]"
         :class="['m-auto', pageFitImageClass]"
       />
-      <div
-        v-show="currentSrc && !providersStore.loadedUrls.has(currentSrc)"
-      ></div>
+      <div v-else>
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </template>
