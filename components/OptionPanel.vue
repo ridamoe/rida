@@ -135,7 +135,7 @@ const progress = useProgressStore();
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
     </div>
     <ProviderSelector
-      class="w-full grow select-none overflow-y-auto"
+      class="w-full select-none overflow-y-auto"
       v-for="provider in providers.providers"
       :provider="provider"
       :key="provider.key"
