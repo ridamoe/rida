@@ -10,9 +10,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
   },
 
   modules: [
@@ -22,7 +20,7 @@ export default defineNuxtConfig({
     "@nuxthub/core",
   ],
 
-  css: ['~/assets/css/tailwind.css'],
+  css: ["~/assets/css/tailwind.css"],
 
   app: {
     head: {

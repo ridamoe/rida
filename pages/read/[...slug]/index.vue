@@ -23,7 +23,7 @@ let { data: result } = await useAsyncData(
           break;
         case "pastebin":
           data = JSON.parse(
-            await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query as string)
+            await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
           );
           break;
         case "gist":
@@ -133,7 +133,7 @@ onBeforeRouteLeave((to: any, from: any, next: any) => {
 </script>
 
 <template>
-  <div class="max-w-screen flex min-h-screen flex-col md:flex-row">
+  <div class="flex min-h-screen max-w-screen flex-col md:flex-row">
     <OptionPanel />
     <Reader></Reader>
   </div>

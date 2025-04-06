@@ -35,9 +35,9 @@ const pageFitImageClass = computed(() => {
     case "fit-all":
       return tw`h-full min-w-0 object-contain`;
     case "fit-width":
-      return tw`h-max w-full min-w-0 max-w-[unset] grow`;
+      return tw`h-max w-full max-w-[unset] min-w-0 grow`;
     case "fit-height":
-      return tw`shrink-1 max-h-full min-h-full min-w-[unset] max-w-[unset]`;
+      return tw`max-h-full min-h-full max-w-[unset] min-w-[unset] shrink-1`;
     default:
       return "";
   }
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     @click="onClick"
-    class="max-w-screen align-start relative flex h-screen grow select-none bg-black"
+    class="align-start relative flex h-screen max-w-screen grow bg-black select-none"
   >
     <PageSelector v-model="progress.page" />
     <div class="h-full w-full overflow-y-auto">

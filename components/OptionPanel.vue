@@ -13,7 +13,7 @@ const progress = useProgressStore();
       class="absolute z-10 hidden h-12 w-12 bg-neutral-900 p-3 md:block"
       :class="
         settings.showPanel
-          ? 'triangle-left right-0 top-0 text-right'
+          ? 'triangle-left top-0 right-0 text-right'
           : 'triangle-right -right-12 text-left'
       "
     >
@@ -38,7 +38,7 @@ const progress = useProgressStore();
         />
       </div>
       <h1 class="flex h-max p-3 text-center">
-        <a class="text-balance break-words text-lg hover:underline" href="#">{{
+        <a class="text-lg text-balance break-words hover:underline" href="#">{{
           progress.title
         }}</a>
       </h1>
@@ -135,7 +135,7 @@ const progress = useProgressStore();
       <div class="mb-2 h-[2px] w-24 self-center rounded-xl bg-rose-600"></div>
     </div>
     <ProviderSelector
-      class="w-full select-none overflow-y-auto"
+      class="w-full overflow-y-auto select-none"
       v-for="provider in providers.providers"
       :provider="provider"
       :key="provider.key"
