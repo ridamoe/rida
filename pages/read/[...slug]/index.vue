@@ -23,7 +23,7 @@ let { data: result } = await useAsyncData(
           break;
         case "pastebin":
           data = JSON.parse(
-            await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
+            await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query as string)
           );
           break;
         case "gist":

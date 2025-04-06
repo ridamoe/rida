@@ -54,7 +54,7 @@ async function send(e: KeyboardEvent) {
 
 <template>
   <div
-    class="max-w-screen flex min-h-screen flex-col items-center justify-center bg-gradient-radial from-neutral-50 from-[-700%] to-neutral-950 to-70%"
+    class="max-w-screen flex min-h-screen flex-col items-center justify-center bg-radial from-neutral-50 from-[-700%] to-neutral-950 to-70%"
   >
     <div class="flex h-44 items-center justify-center md:h-52">
       <svg class="h-full w-full" viewBox="0 0 312 130">

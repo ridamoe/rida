@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: {
@@ -8,17 +9,20 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+  },
+
   modules: [
-    "@nuxtjs/tailwindcss",
     "@vueuse/nuxt",
     "@pinia/nuxt",
-    "@pinia-plugin-persistedstate/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
     "@nuxthub/core",
   ],
 
-  tailwindcss: {
-    cssPath: "~/assets/css/tailwind.css",
-  },
+  css: ['~/assets/css/tailwind.css'],
 
   app: {
     head: {

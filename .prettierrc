@@ -4,5 +4,6 @@
   "semi": true,
   "singleQuote": false,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["tw"]
+  "tailwindFunctions": ["tw"],
+  "tailwindStylesheet": "./assets/css/tailwind.css"
 }
