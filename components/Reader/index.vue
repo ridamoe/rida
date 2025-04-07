@@ -2,17 +2,17 @@
 const settings = useSettingsStore();
 const progress = useProgressStore();
 const providersStore = useProvidersStore();
-const image = ref();
 
-const load = async () => {
-  if (progress.chapter && !progress.chapter.sources) {
-    progress.setChapter(await providersStore.load(progress.chapter));
-  }
-  return true;
-};
-
-await useAsyncData(`preload-chapter`, load);
-watchEffect(load);
+await callOnce(
+  "preload-chapter",
+  async () => {
+    if (progress.chapter && !progress.chapter.sources) {
+      progress.setChapter(await providersStore.load(progress.chapter));
+    }
+    return true;
+  },
+  { mode: "navigation" }
+);
 
 const images = computed(() => progress.source?.images);
 
@@ -31,8 +31,6 @@ function onClick(e: MouseEvent) {
     else progress.prev();
   }
 }
-
-// const onImageLoad = () => providersStore.setLoaded(currentSrc.value!);
 
 onMounted(async () => {
   await providersStore.loadImage(currentSrc.value!);
