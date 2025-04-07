@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
     @click="onClick"
     class="align-start relative flex h-screen max-w-screen grow bg-black select-none"
   >
-    <PageSelector v-model="progress.page" />
+    <ReaderPageSelector v-model="progress.page" />
     <div class="h-full w-full overflow-y-auto">
       <img
         v-if="
