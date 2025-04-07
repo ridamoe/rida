@@ -22,27 +22,6 @@ watchEffect(() => {
 
 const currentSrc = computed(() => images.value?.at(progress.page - 1));
 
-const pageFitImageClass = computed(() => {
-  switch (settings.pageFit) {
-    case "original":
-      return tw`h-max w-max max-w-none`;
-    case "limit-all":
-      return tw`h-full max-h-full w-auto max-w-full object-contain`;
-    case "limit-width":
-      return tw`max-w-full object-contain`;
-    case "limit-height":
-      return tw`h-min max-h-full w-min max-w-full`;
-    case "fit-all":
-      return tw`h-full min-w-0 object-contain`;
-    case "fit-width":
-      return tw`h-max w-full max-w-[unset] min-w-0 grow`;
-    case "fit-height":
-      return tw`max-h-full min-h-full max-w-[unset] min-w-[unset] shrink-1`;
-    default:
-      return "";
-  }
-});
-
 function onClick(e: MouseEvent) {
   let w = (e.target as HTMLElement).offsetWidth;
   let rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -89,18 +68,15 @@ onBeforeUnmount(() => {
   >
     <ReaderPageSelector v-model="progress.page" />
     <div class="h-full w-full overflow-y-auto">
-      <img
-        v-if="
-          currentSrc &&
-          Object.keys(providersStore.loadedImages).includes(currentSrc)
+      <ReaderPage
+        :src="currentSrc && providersStore.loadedImages[currentSrc]"
+        :page-fit="settings.pageFit"
+        :loaded="
+          currentSrc
+            ? Object.keys(providersStore.loadedImages).includes(currentSrc)
+            : false
         "
-        ref="image"
-        :src="providersStore.loadedImages[currentSrc]"
-        :class="['m-auto', pageFitImageClass]"
       />
-      <div v-else>
-        <p>Loading...</p>
-      </div>
     </div>
   </div>
 </template>
