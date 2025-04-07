@@ -19,6 +19,7 @@ await callOnce(
   <div
     class="align-start relative flex h-screen max-w-screen grow bg-black select-none"
   >
-    <ReaderHorizontal />
+    <ReaderVertical v-if="settings.readDirection == 'vertical'" />
+    <ReaderHorizontal v-else />
   </div>
 </template>
