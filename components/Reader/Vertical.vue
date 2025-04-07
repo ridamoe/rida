@@ -39,7 +39,7 @@ function onScroll(e: Event) {
 
 <template>
   <div class="h-screen w-full overflow-y-auto" @scroll="onScroll">
-    <ReaderPage
+    <Page
       v-for="(image, idx) in progress.source?.images"
       :data-idx="idx"
       :src="image"

@@ -149,6 +149,7 @@ export const useProgressStore = defineStore("progressStore", () => {
     title,
     chapter,
     page,
+    pageCount,
 
     $reset,
 

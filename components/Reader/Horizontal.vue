@@ -45,9 +45,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <ReaderPageSelector v-model="progress.page" />
+  <PageSelector />
   <div class="h-full w-full overflow-y-auto" @click="onClick">
-    <ReaderPage
+    <Page
       :src="currentSrc && providersStore.loadedImages[currentSrc]"
       :page-fit="settings.pageFit"
       :loaded="
