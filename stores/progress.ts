@@ -1,6 +1,4 @@
-export const useProgressStore = defineStore("progressStore", () => {
-  const providersStore = useProvidersStore();
-
+export const useData = defineStore("progressStoreData", () => {
   const title = ref();
   const chapter = ref<Chapter>();
   const page = ref(1);
@@ -15,44 +13,57 @@ export const useProgressStore = defineStore("progressStore", () => {
     sourceId.value = 0;
   }
 
+  return {
+    title,
+    chapter,
+    page,
+    providerKey,
+    sourceId,
+
+    $reset,
+  };
+});
+
+export const useProgressStore = defineStore("progressStore", () => {
+  const providersStore = useProvidersStore();
+  const data = useData();
+
   const source: Ref<Source | undefined> = computed(
-    () => chapter.value?.sources?.[sourceId.value]
+    () => data.chapter?.sources?.[data.sourceId]
   );
 
   const provider = computed(() =>
-    providersStore.providers.find((p) => p.key == providerKey.value)
+    providersStore.providers.find((p) => p.key == data.providerKey)
   );
 
-  const pageCount = computed(
-    () => chapter.value?.sources?.[sourceId.value].images.length ?? 1
-  );
+  const pageCount = computed(() => source.value?.images.length ?? 1);
 
   function setProvider(key: string) {
-    providerKey.value = key;
+    data.providerKey = key;
     let chapters = provider.value?.series.value?.chapters;
     if (chapters) {
-      let sameValue = chapters.find((c) => c.chapter == chapter.value?.chapter);
-      if (sameValue) chapter.value = sameValue;
-      else chapter.value = chapters[0];
+      let sameValue = chapters.find((c) => c.chapter == data.chapter?.chapter);
+      if (sameValue) data.chapter = sameValue;
+      else data.chapter = chapters[0];
     }
   }
 
   function setSource(id: number) {
-    sourceId.value = id;
+    data.sourceId = id;
   }
 
   function setTitle(value: any) {
     if (value && typeof value == "string")
-      title.value = value.replace(/_/g, " ");
+      data.title = value.replace(/_/g, " ");
   }
 
   function setChapter(value: Chapter) {
-    chapter.value = value;
+    data.chapter = value;
   }
 
   function setPage(value: any) {
     value = parseInt(value);
-    page.value = value;
+    data.page = value;
   }
 
   function clampPage(page: number): number {
@@ -63,21 +74,21 @@ export const useProgressStore = defineStore("progressStore", () => {
     return page;
   }
 
-  watch([page, pageCount], () => {
-    page.value = clampPage(page.value);
+  watch([() => data.page, pageCount], () => {
+    data.page = clampPage(data.page);
   });
 
   const status = () => {
-    return `${title.value} - Chapter ${chapter.value?.chapter}`;
+    return `${data.title} - Chapter ${data.chapter?.chapter}`;
   };
 
   const next = (skipChapter = false) => {
     let nextChapters = providersStore.chapters.filter((c) =>
-      chapter.value == null ? true : c.value > chapter.value.value
+      data.chapter == null ? true : c.value > data.chapter.value
     );
 
     let nextInLang = nextChapters.find(
-      (c) => c.language == chapter.value?.language
+      (c) => c.language == data.chapter?.language
     );
     let next = nextChapters.at(0);
 
@@ -88,23 +99,23 @@ export const useProgressStore = defineStore("progressStore", () => {
       next = nextInLang;
 
     if (skipChapter && next) {
-      chapter.value = next;
-      page.value = 1;
+      data.chapter = next;
+      data.page = 1;
     } else {
-      if (page.value + 1 > pageCount.value && next) {
-        chapter.value = next;
-        page.value = 1;
-      } else page.value++;
+      if (data.page + 1 > pageCount.value && next) {
+        data.chapter = next;
+        data.page = 1;
+      } else data.page++;
     }
   };
 
   const prev = (skipChapter = false) => {
     let prevChapters = providersStore.chapters.filter((c) =>
-      chapter.value == null ? true : c.value < chapter.value.value
+      data.chapter == null ? true : c.value < data.chapter.value
     );
 
     let prevInLang = prevChapters.findLast(
-      (c) => c.language == chapter.value?.language
+      (c) => c.language == data.chapter?.language
     );
     let prev = prevChapters.at(-1);
     if (
@@ -114,15 +125,23 @@ export const useProgressStore = defineStore("progressStore", () => {
       prev = prevInLang;
 
     if (skipChapter && prev) {
-      chapter.value = prev;
-      page.value = 1;
+      data.chapter = prev;
+      data.page = 1;
     } else {
-      if (page.value - 1 < 1 && prev) {
-        chapter.value = prev;
-        page.value = pageCount.value;
-      } else page.value--;
+      if (data.page - 1 < 1 && prev) {
+        data.chapter = prev;
+        data.page = pageCount.value;
+      } else data.page--;
     }
   };
+
+  const title = computed(() => data.title);
+  const chapter = computed(() => data.chapter);
+  const page = computed(() => data.page);
+
+  function $reset() {
+    data.$reset();
+  }
 
   return {
     provider,

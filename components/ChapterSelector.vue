@@ -6,7 +6,7 @@ const chapterValue = ref(progress.chapter?.chapter);
 
 watch(chapterValue, () => {
   let chapter = providers.chapters.find((c) => c.chapter == chapterValue.value);
-  progress.chapter = chapter;
+  if (chapter) progress.setChapter(chapter);
 });
 
 watch([() => progress.chapter], () => {

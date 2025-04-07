@@ -38,5 +38,9 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    asyncContext: true,
+  },
+
   compatibilityDate: "2024-07-05",
 });

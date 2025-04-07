@@ -1,30 +1,36 @@
+const useData = defineStore("providerStoreData", () => {
+  let providers = ref<{ spec: ProviderSpec; series: Series | undefined }[]>([]);
+
+  return {
+    providers,
+  };
+});
+
 export const useProvidersStore = defineStore(
   "providersStore",
   () => {
     let loadedImages: Ref<Record<string, string>> = ref({});
-    let providersData = ref<
-      { spec: ProviderSpec; series: Series | undefined }[]
-    >([]);
+    let data = useData();
 
     function $reset() {
-      providersData.value = [];
+      data.providers = [];
     }
 
     let providers = computed(() => {
       let list = [];
-      for (const [i, { spec, series }] of providersData.value.entries()) {
+      for (const [i, { spec, series }] of data.providers.entries()) {
         let provider = useProvider(spec, series);
-        providersData.value[i].series = provider.series.value;
+        data.providers[i].series = provider.series.value;
         list.push(provider);
       }
       return list;
     });
 
     async function addProvider(spec: ProviderSpec) {
-      if (!providersData.value.find((d) => d.spec.key == spec.key)) {
+      if (!data.providers.find((d) => d.spec.key == spec.key)) {
         let provider = useProvider(spec);
         await provider.init();
-        providersData.value?.push({ spec, series: provider.series.value });
+        data.providers?.push({ spec, series: provider.series.value });
       }
     }
 
