@@ -27,7 +27,7 @@ const languageName = new Intl.DisplayNames(["en"], { type: "language" });
 function flag(chapter: Chapter) {
   const locale = new Intl.Locale(chapter.language || "und");
   const country = locale.maximize().region;
-  return `http://purecatamphetamine.github.io/country-flag-icons/3x2/${country}.svg`;
+  return `https://purecatamphetamine.github.io/country-flag-icons/3x2/${country}.svg`;
 }
 </script>
 
