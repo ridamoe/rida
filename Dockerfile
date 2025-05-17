@@ -14,6 +14,8 @@ CMD ["npm", "run", "dev"]
 
 FROM base AS build
 
+ENV NITRO_PRESET=node-server
+
 RUN npm run build
 
 FROM node:20.15 AS prod

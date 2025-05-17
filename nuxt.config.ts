@@ -13,12 +13,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
 
-  modules: [
-    "@vueuse/nuxt",
-    "@pinia/nuxt",
-    "pinia-plugin-persistedstate/nuxt",
-    "@nuxthub/core",
-  ],
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
 
   css: ["~/assets/css/tailwind.css"],
 
@@ -31,10 +26,12 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiEndpoint: "",
     corsEndpoint: "https://corsproxy.io/?",
+    deploy_nuxthub: "true",
 
     public: {
       apiEndpoint: "",
       corsEndpoint: "https://corsproxy.io/?",
+      deploy_nuxthub: "true",
     },
   },
 
