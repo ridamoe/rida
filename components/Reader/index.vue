@@ -3,16 +3,14 @@ const settings = useSettingsStore();
 const progress = useProgressStore();
 const providersStore = useProvidersStore();
 
-await callOnce(
-  "preload-chapter",
-  async () => {
-    if (progress.chapter && !progress.chapter.sources) {
-      progress.setChapter(await providersStore.load(progress.chapter));
-    }
-    return true;
-  },
-  { mode: "navigation" }
-);
+const load = async () => {
+  if (progress.chapter && !progress.chapter.sources) {
+    progress.setChapter(await providersStore.load(progress.chapter));
+  }
+  return true;
+};
+await callOnce("preload-chapter", load, { mode: "navigation" });
+watchEffect(load);
 </script>
 
 <template>
