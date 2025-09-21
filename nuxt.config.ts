@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@nuxthub/core",
+    "@vite-pwa/nuxt",
   ],
 
   css: ["~/assets/css/tailwind.css"],
