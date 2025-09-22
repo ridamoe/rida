@@ -38,10 +38,7 @@ function onScroll(e: Event) {
 </script>
 
 <template>
-  <div
-    class="scrollbar-hidden h-screen w-full overflow-y-auto"
-    @scroll="onScroll"
-  >
+  <div class="scrollbar-styled w-full md:overflow-y-auto" @scroll="onScroll">
     <Page
       v-for="(image, idx) in progress.source?.images"
       :data-idx="idx"

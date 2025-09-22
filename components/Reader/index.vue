@@ -15,9 +15,15 @@ watchEffect(load);
 
 <template>
   <div
-    class="align-start relative flex h-screen max-w-screen grow bg-black select-none"
+    class="align-start md:scrollbar-styled relative scrollbar-hidden flex grow flex-col bg-black select-none md:h-screen md:max-w-screen"
   >
     <ReaderVertical v-if="settings.readDirection == 'vertical'" />
     <ReaderHorizontal v-else />
+    <footer
+      class="inline-block w-full items-center gap-0 bg-neutral-800 text-stone-200 md:hidden"
+      v-if="settings.readDirection == 'vertical'"
+    >
+      <ChapterSelector />
+    </footer>
   </div>
 </template>
