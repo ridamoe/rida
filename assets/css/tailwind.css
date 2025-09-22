@@ -25,15 +25,26 @@
   }
 }
 
-*::-webkit-scrollbar {
+.scrollbar-styled::-webkit-scrollbar {
     width: 10px;
 }
 
-*::-webkit-scrollbar-track {
-    background-color: var(--color-neutral-800);
+.scrollbar-styled::-webkit-scrollbar-track {
+    background-color: transparent;
 }
 
-*::-webkit-scrollbar-thumb {
+.scrollbar-styled::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background-color: var(--color-neutral-600);
+}
+
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  & { 
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
