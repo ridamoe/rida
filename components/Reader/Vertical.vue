@@ -45,6 +45,7 @@ function onScroll(e: Event) {
       :src="image"
       :loaded="true"
       :page-fit="settings.pageFit"
+      @contextmenu.prevent
     />
   </div>
 </template>
