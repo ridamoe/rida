@@ -38,7 +38,7 @@ const pageFitImageClass = computed(() => {
   <img
     v-if="src && loaded"
     :src="src"
-    :class="['m-auto mb-[-0.005px]', pageFitImageClass]"
+    :class="['m-auto my-[-0.01px]', pageFitImageClass]"
   />
   <div v-else class="flex items-center justify-center">
     <p class="text-lg text-white">Loading...</p>
