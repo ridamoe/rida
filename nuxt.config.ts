@@ -25,7 +25,7 @@ export default defineNuxtConfig({
     registerType: "autoUpdate",
     manifest: {
       name: "Rida",
-      display: "standalone",
+      display: "fullscreen",
       short_name: "Rida",
       description: "An intuitive manga reader",
       theme_color: "#0a0a0a",
