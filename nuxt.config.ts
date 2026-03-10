@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: {
-    enabled: true,
+    enabled: false,
 
     timeline: {
       enabled: true,
@@ -25,11 +25,12 @@ export default defineNuxtConfig({
     registerType: "autoUpdate",
     manifest: {
       name: "Rida",
-      display: "standalone",
+      display: "fullscreen",
       short_name: "Rida",
       description: "An intuitive manga reader",
       theme_color: "#0a0a0a",
       background_color: "#0f172a",
+      start_url: "/?utm_source=pwa",
       icons: [
         {
           sizes: "1024x1024",
@@ -38,6 +39,7 @@ export default defineNuxtConfig({
         },
       ],
     },
+    devOptions: { enabled: true },
     workbox: {
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
