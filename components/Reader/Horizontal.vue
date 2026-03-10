@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
 
 <template>
   <PageSelector />
-  <div class="h-full w-full overflow-y-auto" @click="onClick">
+  <div class="scrollbar-styled h-full w-full overflow-y-auto" @click="onClick">
     <Page
       :src="currentSrc && providersStore.loadedImages[currentSrc]"
       :page-fit="settings.pageFit"
