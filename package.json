@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy-preview": "NITRO_PRESET=cloudflare_module npx nuxt build && npx wrangler deploy -e preview",
+    "deploy-dev": "NITRO_PRESET=cloudflare_module npx nuxt build && npx wrangler dev -e preview"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.10.1",
@@ -24,9 +26,11 @@
     "@iconify/json": "^2.2.323",
     "@tailwindcss/postcss": "^4.1.3",
     "@tailwindcss/vite": "^4.1.3",
+    "node-gyp": "^12.2.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^4.1.3"
+    "tailwindcss": "^4.1.3",
+    "wrangler": "^4.73.0"
   },
   "overrides": {
     "nuxt": {
