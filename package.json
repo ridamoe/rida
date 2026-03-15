@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxthub/core": "^0.9.0",
     "@pinia/nuxt": "^0.10.1",
     "@vite-pwa/nuxt": "^1.0.4",
     "@vueuse/core": "^13.0.0",

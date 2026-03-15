@@ -17,7 +17,6 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
-    "@nuxthub/core",
     "@vite-pwa/nuxt",
   ],
 
@@ -59,12 +58,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiEndpoint: "",
     corsEndpoint: "https://corsproxy.io/?",
-    deploy_nuxthub: "true",
 
     public: {
       apiEndpoint: "",
       corsEndpoint: "https://corsproxy.io/?",
-      deploy_nuxthub: "true",
     },
   },
 
