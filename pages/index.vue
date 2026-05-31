@@ -16,39 +16,56 @@ async function send(e: KeyboardEvent) {
     url = new URL(input);
   } catch (error) {
     errorMessage.value = "Your input is not a valid url";
+    return;
   }
+
+  if (url?.host == "pastebin.com") {
+    let pb = url.pathname.split("/").filter((x) => x != "");
+    let query: { page: number; d: string } = {
+      page: 1,
+      d: `pastebin:${pb[0]}`,
+    };
+
+    let path = "/read";
+    navigateTo({ path, query }, { replace: false });
+    return;
+  }
+
   let match = await API.getMatch(url?.toString()!);
-  if (match.result) {
-    if (apiInfo.value?.result[match.result.key].chapters.auto) {
-      let selected_chapter;
-      if (match.result.params["chapter"]) {
-        selected_chapter = match.result.params["chapter"];
-        delete match.result.params["chapter"];
-      }
-
-      let configData: ConfigDataSpec = {
-        providers: [
-          {
-            type: "remote",
-            key: match.result.key,
-            params: match.result.params,
-          },
-        ],
-      };
-      let data = btoa(JSON.stringify(configData));
-      let query: { page: number; d: string } = {
-        page: 1,
-        d: `json:${data}`,
-      };
-
-      let path = "/read";
-      if (selected_chapter) path += "/" + selected_chapter;
-      navigateTo({ path, query }, { replace: false });
-    } else {
-      errorMessage.value = "Chapters need to be specified(?)";
-    }
-  } else {
+  if (!match.result) {
+    errorMessage.value = "The entered url is not supported";
+    return;
   }
+
+  if (!apiInfo.value?.result[match.result.key].chapters.auto) {
+    errorMessage.value = "Url is supported, but chapters need to be specified";
+    return;
+  }
+
+  let selected_chapter;
+  if (match.result.params["chapter"]) {
+    selected_chapter = match.result.params["chapter"];
+    delete match.result.params["chapter"];
+  }
+
+  let configData: ConfigDataSpec = {
+    providers: [
+      {
+        type: "remote",
+        key: match.result.key,
+        params: match.result.params,
+      },
+    ],
+  };
+  let data = btoa(JSON.stringify(configData));
+  let query: { page: number; d: string } = {
+    page: 1,
+    d: `json:${data}`,
+  };
+
+  let path = "/read";
+  if (selected_chapter) path += "/" + selected_chapter;
+  navigateTo({ path, query }, { replace: false });
 }
 </script>
 
