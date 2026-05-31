@@ -85,6 +85,9 @@ declare global {
           supported: boolean;
           auto: boolean;
         };
+        params: {
+          images: string[];
+        };
       };
     };
   }

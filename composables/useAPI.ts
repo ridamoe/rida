@@ -1,3 +1,11 @@
+function _filter(raw: any, allowed: string[]) {
+  return Object.keys(raw)
+    .filter((key) => allowed.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = raw[key];
+      return obj;
+    }, {} as any);
+}
 export const useAPI = () => {
   const { $api } = useNuxtApp();
 
@@ -13,8 +21,10 @@ export const useAPI = () => {
     remote: RemoteProviderSpec,
     params: Record<string, string>
   ): Promise<APIImagesResponse> {
+    let allowed_params = (await getInfo()).result[remote.key].params;
+    let p = _filter({ ...remote.params, ...params }, allowed_params.images);
     return $api(`/website/${remote.key}/images`, {
-      query: { ...remote.params, ...params },
+      query: p,
     });
   }
 
