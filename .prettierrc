@@ -5,5 +5,5 @@
   "singleQuote": false,
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindFunctions": ["tw"],
-  "tailwindStylesheet": "./assets/css/tailwind.css"
+  "tailwindStylesheet": "./app/assets/css/tailwind.css"
 }
