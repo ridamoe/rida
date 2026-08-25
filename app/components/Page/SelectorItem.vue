@@ -16,7 +16,7 @@ defineEmits<{
     class="relative flex h-8 grow items-end hover:bottom-1"
     :class="[
       {
-        [tw`bg-gradient-to-t from-white`]: active,
+        [tw`bg-linear-to-t from-white`]: active,
       },
     ]"
   >

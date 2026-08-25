@@ -21,7 +21,9 @@ export const useAPI = () => {
     remote: RemoteProviderSpec,
     params: Record<string, string>
   ): Promise<APIImagesResponse> {
-    let allowed_params = (await getInfo()).result[remote.key].params;
+    let keyInfo = (await getInfo()).result[remote.key];
+    if (!keyInfo) throw new Error("Failed to get remote key info");
+    let allowed_params = keyInfo.params;
     let p = _filter({ ...remote.params, ...params }, allowed_params.images);
     return $api(`/website/${remote.key}/images`, {
       query: p,

@@ -1,4 +1,6 @@
 declare global {
+  type NumberRange = [number, number];
+
   type Provider = ReturnType<typeof useProvider>;
 
   interface Source {

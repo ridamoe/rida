@@ -20,7 +20,7 @@ export const useProvidersStore = defineStore(
       let list = [];
       for (const [i, { spec, series }] of data.providers.entries()) {
         let provider = useProvider(spec, series);
-        data.providers[i].series = provider.series.value;
+        data.providers[i]!.series = provider.series.value;
         list.push(provider);
       }
       return list;

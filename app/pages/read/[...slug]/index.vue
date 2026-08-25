@@ -2,6 +2,12 @@
 import { isClient } from "@vueuse/core";
 import type { WatchStopHandle } from "vue";
 
+definePageMeta({
+  validate(route) {
+    return route.query.d != undefined && typeof route.query.d === "string";
+  },
+});
+
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
@@ -12,14 +18,17 @@ const corsEndpoint = isClient
   ? runtimeConfig.public.corsEndpoint
   : runtimeConfig.corsEndpoint;
 
-async function parseProviderData(format: string, query: string) {
+async function parseProviderData(
+  format: string | undefined,
+  query: string | undefined
+) {
+  if (query == undefined) throw new Error("Missing provider query");
   switch (format) {
     case "json":
       return JSON.parse(atob(query));
     case "pastebin":
-      return JSON.parse(
-        await $fetch(corsEndpoint + "https://pastebin.com/raw/" + query)
-      );
+      let url = corsEndpoint + "https://pastebin.com/raw/" + query;
+      return JSON.parse(await $fetch(url)); // @ts-ignore
     case "gist":
       return JSON.parse(
         await $fetch("https://gist.githubusercontent.com/" + query)
@@ -31,7 +40,9 @@ async function parseProviderData(format: string, query: string) {
 
 // Locates chapter based on slug
 function getChapterFromSlug() {
+  if (route.params.slug == undefined) return null;
   let chapterSlugData = route.params.slug.at(-1);
+  if (chapterSlugData == undefined) return null;
   return providerStore.chapters.find((c) => {
     if (c.chapter == chapterSlugData) return true;
     if (c.params && Object.values(c.params).includes(chapterSlugData))
@@ -55,7 +66,9 @@ await callOnce(
   "load-reading-config",
   async () => {
     // Parse config data
-    let [format, query] = route.query.d.split(":");
+    if (typeof route.query.d !== "string") return;
+    let queryData = route.query.d.split(":");
+    let [format, query] = queryData;
     let data = await parseProviderData(format, query);
     for (let providerSpec of data.providers) {
       await providerStore.addProvider(providerSpec);
@@ -86,12 +99,16 @@ await callOnce(
 );
 
 function updateUrl() {
-  let urlTitle = progress.title?.toLowerCase() ?? "";
-  urlTitle = urlTitle.replace(/\s?~.*?~\s?/g, "");
-  urlTitle = urlTitle.replace(/\s\.\s*?.*/g, "");
-  urlTitle = urlTitle.replace(/[^a-z0-9 ]/g, "");
-  urlTitle = urlTitle.replace(/ /g, "-");
-  if (!urlTitle) urlTitle = route.params.slug.at(-2);
+  let urlTitle;
+  if (route.params.slug != undefined) urlTitle = route.params.slug.at(-2) ?? "";
+
+  if (!urlTitle) {
+    urlTitle = progress.title?.toLowerCase() ?? "";
+    urlTitle = urlTitle.replace(/\s?~.*?~\s?/g, "");
+    urlTitle = urlTitle.replace(/\s\.\s*?.*/g, "");
+    urlTitle = urlTitle.replace(/[^a-z0-9 ]/g, "");
+    urlTitle = urlTitle.replace(/ /g, "-");
+  }
 
   let routeParams = {
     name: "read-slug",

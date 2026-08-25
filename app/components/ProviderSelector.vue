@@ -29,10 +29,16 @@ function flag(chapter: Chapter) {
   const country = locale.maximize().region;
   return `https://purecatamphetamine.github.io/country-flag-icons/3x2/${country}.svg`;
 }
+
+const providerName = computed(
+  () =>
+    props.provider.key.substring(0, 1).toUpperCase() +
+    props.provider.key.substring(1)
+);
 </script>
 
 <template>
-  <div v-if="providedChapters && providedChapters.length > 0">
+  <div v-if="providedChapters && providedChapters[0]">
     <template v-if="hasMultipleChapters">
       <ItemSelect
         class="p-2"
@@ -56,9 +62,7 @@ function flag(chapter: Chapter) {
             v-model="expanded"
           />
 
-          <span class="ml-2">{{
-            provider.key[0].toUpperCase() + provider.key.substring(1)
-          }}</span>
+          <span class="ml-2">{{ providerName }}</span>
         </div>
       </ItemSelect>
       <div class="ml-6" v-show="expanded" v-for="chapter in providedChapters">
@@ -92,9 +96,7 @@ function flag(chapter: Chapter) {
         @click="progress.setChapter(providedChapters[0])"
       >
         <div class="flex h-8 items-center">
-          <span class="ml-10">{{
-            provider.key[0].toUpperCase() + provider.key.substring(1)
-          }}</span>
+          <span class="ml-10">{{ providerName }}</span>
           <img
             v-if="providedChapters[0].language"
             class="ml-auto inline-block h-4"

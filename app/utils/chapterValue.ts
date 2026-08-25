@@ -7,7 +7,7 @@ function chapterValue(chapter: Chapter) {
   while (true) {
     let match = chap.match(/.*?(\d+)[^\d]*(.*)/);
     if (match) {
-      chap = match[2];
+      chap = match[2]!;
 
       let n = Number(match[1]);
       if (k == 0) val = n;
@@ -33,28 +33,28 @@ export default function calcChapterValues(
     .filter((v) => v != undefined);
 
   // Handle one-shots
-  if (holes.length >= 1 && holes[0] == 0) {
+  if (holes.length >= 1 && holes[0] == 0 && chapters[0] != undefined) {
     if (!chapters.some((c) => c.value == 1)) chapters[0].value = 1;
     else chapters[0].value = 0;
     holes = holes.slice(1);
   }
 
   let holeRanges = holes.reduce((ranges, current, index, array) => {
-    let lastRange = ranges[ranges.length - 1];
+    let lastRange = ranges[ranges.length - 1] as NumberRange;
     if (lastRange && current === lastRange[1] + 1) lastRange[1] = current;
     else ranges.push([current!, current!]);
     return ranges;
-  }, [] as number[][]);
+  }, [] as NumberRange[]);
 
   for (let range of holeRanges) {
     let [start, stop] = range;
 
     let before, after;
 
-    if (start - 1 >= 0) before = chapters[start - 1].value;
+    if (start - 1 >= 0) before = chapters[start - 1]!.value;
     else before = 0;
 
-    if (stop + 1 < chapters.length) after = chapters[stop + 1].value;
+    if (stop + 1 < chapters.length) after = chapters[stop + 1]!.value;
     else after = before + 1;
 
     let distance = after - before + 1;
@@ -62,7 +62,7 @@ export default function calcChapterValues(
     let k = (after - before) / distance;
     for (let i = 0; i < stop - start + 1; i++) {
       let val = before + k * (i + 1);
-      chapters[start + i].value = val;
+      chapters[start + i]!.value = val;
     }
   }
 

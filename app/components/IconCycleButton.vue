@@ -47,7 +47,9 @@ const state = computed(() => {
 const nextStateName = computed(() => {
   let currentIdx = props.states.indexOf(state.value);
   let idx = (currentIdx + 1) % props.states.length;
-  return props.states[idx].value;
+  let s = props.states[idx];
+  if (!s) return undefined;
+  return s.value;
 });
 
 function update() {

@@ -37,7 +37,8 @@ async function send(e: KeyboardEvent) {
     return;
   }
 
-  if (!apiInfo.value?.result[match.result.key].chapters.auto) {
+  let keyInfo = apiInfo.value?.result[match.result.key];
+  if (!keyInfo || keyInfo.chapters.auto) {
     errorMessage.value = "Url is supported, but chapters need to be specified";
     return;
   }
@@ -99,7 +100,7 @@ async function send(e: KeyboardEvent) {
       />
       <span
         v-if="errorMessage"
-        class="absolute bottom-[-1rem] w-full text-center text-lg text-rose-800"
+        class="absolute -bottom-4 w-full text-center text-lg text-rose-800"
       >
         {{ errorMessage }}
       </span>
