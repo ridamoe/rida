@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "rida",
+  "name": "ridamoe",
   "compatibility_date": "2026-08-25",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./.output/server/index.mjs",
@@ -9,19 +9,7 @@
     "binding": "ASSETS"
   },
   "observability": {
-    "enabled": true,
-  },
-  "env": {
-    "preview": {
-        "routes": [
-          {
-            "pattern": "preview.rida.moe",
-            "custom_domain": true,
-            "enabled": true,
-            "previews_enabled": false
-          }
-        ]
-    }
-  },
+    "enabled": true
+  }
 
 }   
