@@ -9,9 +9,19 @@
     "binding": "ASSETS"
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "env": {
-    "preview": {}
-  }
-}
+    "preview": {
+        "routes": [
+          {
+            "pattern": "preview.rida.moe",
+            "custom_domain": true,
+            "enabled": true,
+            "previews_enabled": false
+          }
+        ]
+    }
+  },
+
+}   
