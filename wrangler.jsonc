@@ -1,7 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rida",
-  "compatibility_date": "2026-03-15",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": ["nodejs_compat"],
   "main": "./.output/server/index.mjs",
   "assets": {
     "directory": "./.output/public/",
