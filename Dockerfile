@@ -1,4 +1,4 @@
-FROM node:20.15 AS base
+FROM node:26 AS base
 
 RUN mkdir /src
 WORKDIR /src
@@ -18,7 +18,7 @@ ENV NITRO_PRESET=node-server
 
 RUN npm run build
 
-FROM node:20.15 AS prod
+FROM node:26 AS prod
 
 RUN mkdir /app
 WORKDIR /app
